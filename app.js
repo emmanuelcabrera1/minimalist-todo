@@ -1,5 +1,5 @@
 // ==========================================
-// MINIMALIST TODO APP - REACT LOGIC
+// MINIMALIST TODO APP - REACT LOGIC (WITH CRUD)
 // ==========================================
 
 const { useState, useEffect } = React;
@@ -11,7 +11,7 @@ const INITIAL_TASKS = [
     { id: 3, text: 'Meditate for 15 mins', completed: false }
 ];
 
-const LIST_GROUPS = [
+const INITIAL_GROUPS = [
     { id: 1, name: 'Work', count: 5, color: '#34C759' },
     { id: 2, name: 'Personal', count: 3, color: '#007AFF' },
     { id: 3, name: 'Groceries', count: 2, color: '#FF9500' }
@@ -20,7 +20,7 @@ const LIST_GROUPS = [
 // ========== COMPONENTS ==========
 
 // Task Item Component
-function TaskItem({ task, onToggle }) {
+function TaskItem({ task, onToggle, onDelete }) {
     return (
         <div className={`task-item ${task.completed ? 'completed' : ''}`}>
             <div
@@ -28,24 +28,80 @@ function TaskItem({ task, onToggle }) {
                 onClick={() => onToggle(task.id)}
             />
             <div className="task-text">{task.text}</div>
+            <button className="delete-btn" onClick={() => onDelete(task.id)}>×</button>
         </div>
     );
 }
 
 // Group Item Component
-function GroupItem({ group }) {
+function GroupItem({ group, onDelete }) {
     return (
         <div className="group-item">
-            <div className="group-name">{group.name}</div>
-            <div className="group-count">{group.count} {group.count === 1 ? 'task' : 'tasks'}</div>
+            <div className="group-content">
+                <div className="group-name">{group.name}</div>
+                <div className="group-count">{group.count} {group.count === 1 ? 'task' : 'tasks'}</div>
+            </div>
+            <button className="delete-btn" onClick={() => onDelete(group.id)}>×</button>
         </div>
+    );
+}
+
+// Add Task Form
+function AddTaskForm({ onAdd }) {
+    const [text, setText] = useState('');
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (text.trim()) {
+            onAdd(text.trim());
+            setText('');
+        }
+    };
+
+    return (
+        <form className="add-form" onSubmit={handleSubmit}>
+            <input
+                type="text"
+                className="add-input"
+                placeholder="Add a new task..."
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+            />
+            <button type="submit" className="add-btn">+</button>
+        </form>
+    );
+}
+
+// Add Group Form
+function AddGroupForm({ onAdd }) {
+    const [name, setName] = useState('');
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (name.trim()) {
+            onAdd(name.trim());
+            setName('');
+        }
+    };
+
+    return (
+        <form className="add-form" onSubmit={handleSubmit}>
+            <input
+                type="text"
+                className="add-input"
+                placeholder="Add a new list..."
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+            />
+            <button type="submit" className="add-btn">+</button>
+        </form>
     );
 }
 
 // Main App Component
 function App() {
     const [tasks, setTasks] = useState(INITIAL_TASKS);
-    const [groups] = useState(LIST_GROUPS);
+    const [groups, setGroups] = useState(INITIAL_GROUPS);
 
     const toggleTask = (id) => {
         setTasks(tasks.map(task =>
@@ -53,20 +109,58 @@ function App() {
         ));
     };
 
+    const addTask = (text) => {
+        const newTask = {
+            id: Date.now(),
+            text: text,
+            completed: false
+        };
+        setTasks([...tasks, newTask]);
+    };
+
+    const deleteTask = (id) => {
+        setTasks(tasks.filter(task => task.id !== id));
+    };
+
+    const addGroup = (name) => {
+        const newGroup = {
+            id: Date.now(),
+            name: name,
+            count: 0,
+            color: '#34C759'
+        };
+        setGroups([...groups, newGroup]);
+    };
+
+    const deleteGroup = (id) => {
+        setGroups(groups.filter(group => group.id !== id));
+    };
+
     return (
         <>
             {/* Layer 1: Today List */}
             <div id="today-tasks">
                 {tasks.map(task => (
-                    <TaskItem key={task.id} task={task} onToggle={toggleTask} />
+                    <TaskItem
+                        key={task.id}
+                        task={task}
+                        onToggle={toggleTask}
+                        onDelete={deleteTask}
+                    />
                 ))}
+                <AddTaskForm onAdd={addTask} />
             </div>
 
             {/* Layer 2: Groups */}
             <div id="groups-content" style={{ display: 'none' }}>
                 {groups.map(group => (
-                    <GroupItem key={group.id} group={group} />
+                    <GroupItem
+                        key={group.id}
+                        group={group}
+                        onDelete={deleteGroup}
+                    />
                 ))}
+                <AddGroupForm onAdd={addGroup} />
             </div>
         </>
     );
@@ -107,26 +201,12 @@ function toggleMenu() {
 }
 
 // ========== RENDER ==========
-// Wait for DOM to be ready
 document.addEventListener('DOMContentLoaded', () => {
-    // Render React component for Today tasks
     const todayContainer = document.getElementById('today-list');
     const root1 = ReactDOM.createRoot(todayContainer);
     root1.render(<App />);
 
-    // Render React component for Groups
     const groupsContainer = document.getElementById('groups-list');
     const root2 = ReactDOM.createRoot(groupsContainer);
-
-    const GroupsList = () => {
-        return (
-            <>
-                {LIST_GROUPS.map(group => (
-                    <GroupItem key={group.id} group={group} />
-                ))}
-            </>
-        );
-    };
-
-    root2.render(<GroupsList />);
+    root2.render(<App />);
 });
