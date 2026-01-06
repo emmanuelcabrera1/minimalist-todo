@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnostic Test</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #f0f0f0; }
+        .test { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .pass { background: #d4edda; color: #155724; }
+        .fail { background: #f8d7da; color: #721c24; }
+        #react-test { margin-top: 20px; padding: 20px; background: white; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Diagnostic Test Results</h1>
+    <div id="results"></div>
+    <div id="react-test"></div>
+
+    <!-- Load React and Babel -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Test Script -->
+    <script>
+        const results = [];
+
+        function addResult(test, passed, details = '') {
+            results.push({ test, passed, details });
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = results.map(r =>
+                `<div class="test ${r.passed ? 'pass' : 'fail'}">
+                    ${r.passed ? '✅' : '❌'} ${r.test}
+                    ${r.details ? `<br><small>${r.details}</small>` : ''}
+                </div>`
+            ).join('');
+        }
+
+        // Test 1: React loaded
+        addResult('React library loaded', typeof React !== 'undefined', typeof React);
+
+        // Test 2: ReactDOM loaded
+        addResult('ReactDOM library loaded', typeof ReactDOM !== 'undefined', typeof ReactDOM);
+
+        // Test 3: Babel loaded
+        addResult('Babel Standalone loaded', typeof Babel !== 'undefined', typeof Babel);
+
+        // Test 4: DOM ready
+        addResult('DOM ready', document.readyState === 'complete' || document.readyState === 'interactive');
+
+        // Test 5: Target container exists
+        const container = document.getElementById('react-test');
+        addResult('Target container exists', container !== null, container ? 'Found' : 'Not found');
+    </script>
+
+    <!-- Test React JSX with Babel -->
+    <script type="text/babel">
+        console.log('[Babel Test] This script is being transformed by Babel');
+
+        const { useState } = React;
+
+        function TestComponent() {
+            const [count, setCount] = useState(0);
+
+            return (
+                <div>
+                    <h2>React Component Test</h2>
+                    <p>Count: {count}</p>
+                    <button onClick={() => setCount(count + 1)}>
+                        Click me to test React
+                    </button>
+                    <p style={{color: 'green', marginTop: '10px'}}>
+                        ✅ If you see this, React + Babel are working!
+                    </p>
+                </div>
+            );
+        }
+
+        // Try to render
+        try {
+            const container = document.getElementById('react-test');
+            if (container) {
+                const root = ReactDOM.createRoot(container);
+                root.render(<TestComponent />);
+                console.log('[Babel Test] ✅ React component rendered successfully');
+            } else {
+                console.error('[Babel Test] ❌ Container not found');
+            }
+        } catch (error) {
+            console.error('[Babel Test] ❌ Error rendering:', error);
+        }
+    </script>
+
+    <script>
+        // Final test after everything
+        setTimeout(() => {
+            const reactContent = document.getElementById('react-test').textContent;
+            const hasReactContent = reactContent.includes('React Component Test');
+            addResult('React JSX rendering', hasReactContent, hasReactContent ? 'Component rendered' : 'Component failed to render');
+
+            console.log('=== DIAGNOSTIC COMPLETE ===');
+            console.log('Results:', results);
+        }, 1000);
+    </script>
+</body>
+</html>
