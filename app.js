@@ -10,6 +10,11 @@ const STORAGE_KEYS = {
     GROUPS: 'minimalist-todo-groups'
 };
 
+// Generate unique ID to prevent collisions (timestamp + random)
+const generateUniqueId = () => {
+    return Date.now() + Math.random().toString(36).substr(2, 9);
+};
+
 const loadFromStorage = (key, fallback) => {
     try {
         const stored = localStorage.getItem(key);
@@ -195,19 +200,22 @@ function TodayContainer() {
         setTasks(tasks.map(task =>
             task.id === id ? { ...task, completed: !task.completed } : task
         ));
+        console.log('[Task] Toggled task:', id);
     };
 
     const addTask = (text) => {
         const newTask = {
-            id: Date.now(),
+            id: generateUniqueId(),
             text: text,
             completed: false
         };
         setTasks([...tasks, newTask]);
+        console.log('[Task] Added new task:', newTask);
     };
 
     const deleteTask = (id) => {
         setTasks(tasks.filter(task => task.id !== id));
+        console.log('[Task] Deleted task:', id);
     };
 
     return (
@@ -232,16 +240,18 @@ function GroupsContainer() {
 
     const addGroup = (name) => {
         const newGroup = {
-            id: Date.now(),
+            id: generateUniqueId(),
             name: name,
             count: 0,
             color: '#34C759'
         };
         setGroups([...groups, newGroup]);
+        console.log('[Group] Added new group:', newGroup);
     };
 
     const deleteGroup = (id) => {
         setGroups(groups.filter(group => group.id !== id));
+        console.log('[Group] Deleted group:', id);
     };
 
     return (
@@ -289,17 +299,48 @@ function toggleMenu() {
 
 // ========== RENDER (FIXED: Two separate roots, no portals) ==========
 document.addEventListener('DOMContentLoaded', () => {
-    // Render Today view
-    const todayContainer = document.getElementById('today-list');
-    if (todayContainer) {
-        const todayRoot = ReactDOM.createRoot(todayContainer);
-        todayRoot.render(<TodayContainer />);
-    }
+    console.log('[App Init] DOM Content Loaded - Starting React initialization...');
 
-    // Render Groups view
-    const groupsContainer = document.getElementById('groups-list');
-    if (groupsContainer) {
-        const groupsRoot = ReactDOM.createRoot(groupsContainer);
-        groupsRoot.render(<GroupsContainer />);
+    try {
+        // Verify React is loaded
+        if (typeof React === 'undefined') {
+            throw new Error('React library not loaded');
+        }
+        if (typeof ReactDOM === 'undefined') {
+            throw new Error('ReactDOM library not loaded');
+        }
+        console.log('[App Init] React libraries verified ✓');
+
+        // Render Today view
+        const todayContainer = document.getElementById('today-list');
+        if (todayContainer) {
+            console.log('[App Init] Rendering TodayContainer...');
+            const todayRoot = ReactDOM.createRoot(todayContainer);
+            todayRoot.render(<TodayContainer />);
+            console.log('[App Init] TodayContainer rendered ✓');
+        } else {
+            console.error('[App Error] today-list container not found!');
+        }
+
+        // Render Groups view
+        const groupsContainer = document.getElementById('groups-list');
+        if (groupsContainer) {
+            console.log('[App Init] Rendering GroupsContainer...');
+            const groupsRoot = ReactDOM.createRoot(groupsContainer);
+            groupsRoot.render(<GroupsContainer />);
+            console.log('[App Init] GroupsContainer rendered ✓');
+        } else {
+            console.error('[App Error] groups-list container not found!');
+        }
+
+        console.log('[App Init] ✅ Application initialized successfully!');
+    } catch (error) {
+        console.error('[App Error] ❌ Failed to initialize application:', error);
+        console.error('[App Error] Stack trace:', error.stack);
+        // Display user-friendly error
+        const errorMsg = document.createElement('div');
+        errorMsg.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(255,59,48,0.9);color:white;padding:20px;border-radius:12px;text-align:center;z-index:9999;';
+        errorMsg.innerHTML = `<strong>App Error</strong><br>Failed to load. Check console for details.<br><small>${error.message}</small>`;
+        document.body.appendChild(errorMsg);
     }
 });
