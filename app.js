@@ -1,8 +1,32 @@
 // ==========================================
-// MINIMALIST TODO APP - REACT LOGIC (WITH CRUD)
+// MINIMALIST TODO APP - REACT LOGIC (FIXED)
 // ==========================================
 
 const { useState, useEffect } = React;
+
+// ========== STORAGE HELPERS ==========
+const STORAGE_KEYS = {
+    TASKS: 'minimalist-todo-tasks',
+    GROUPS: 'minimalist-todo-groups'
+};
+
+const loadFromStorage = (key, fallback) => {
+    try {
+        const stored = localStorage.getItem(key);
+        return stored ? JSON.parse(stored) : fallback;
+    } catch (error) {
+        console.error('Error loading from storage:', error);
+        return fallback;
+    }
+};
+
+const saveToStorage = (key, data) => {
+    try {
+        localStorage.setItem(key, JSON.stringify(data));
+    } catch (error) {
+        console.error('Error saving to storage:', error);
+    }
+};
 
 // ========== DATA ==========
 const INITIAL_TASKS = [
@@ -26,9 +50,19 @@ function TaskItem({ task, onToggle, onDelete }) {
             <div
                 className={`checkbox ${task.completed ? 'checked' : ''}`}
                 onClick={() => onToggle(task.id)}
+                role="checkbox"
+                aria-checked={task.completed}
+                tabIndex={0}
+                onKeyPress={(e) => e.key === 'Enter' && onToggle(task.id)}
             />
             <div className="task-text">{task.text}</div>
-            <button className="delete-btn" onClick={() => onDelete(task.id)}>×</button>
+            <button
+                className="delete-btn"
+                onClick={() => onDelete(task.id)}
+                aria-label={`Delete task: ${task.text}`}
+            >
+                ×
+            </button>
         </div>
     );
 }
@@ -41,7 +75,13 @@ function GroupItem({ group, onDelete }) {
                 <div className="group-name">{group.name}</div>
                 <div className="group-count">{group.count} {group.count === 1 ? 'task' : 'tasks'}</div>
             </div>
-            <button className="delete-btn" onClick={() => onDelete(group.id)}>×</button>
+            <button
+                className="delete-btn"
+                onClick={() => onDelete(group.id)}
+                aria-label={`Delete group: ${group.name}`}
+            >
+                ×
+            </button>
         </div>
     );
 }
@@ -49,25 +89,30 @@ function GroupItem({ group, onDelete }) {
 // Add Task Form
 function AddTaskForm({ onAdd }) {
     const [text, setText] = useState('');
+    const MAX_LENGTH = 500;
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (text.trim()) {
-            onAdd(text.trim());
+        const trimmed = text.trim();
+        if (trimmed && trimmed.length <= MAX_LENGTH) {
+            onAdd(trimmed);
             setText('');
         }
     };
 
     return (
         <form className="add-form" onSubmit={handleSubmit}>
+            <label htmlFor="task-input" className="visually-hidden">Add new task</label>
             <input
+                id="task-input"
                 type="text"
                 className="add-input"
                 placeholder="Add a new task..."
                 value={text}
                 onChange={(e) => setText(e.target.value)}
+                maxLength={MAX_LENGTH}
             />
-            <button type="submit" className="add-btn">+</button>
+            <button type="submit" className="add-btn" aria-label="Add task">+</button>
         </form>
     );
 }
@@ -75,33 +120,85 @@ function AddTaskForm({ onAdd }) {
 // Add Group Form
 function AddGroupForm({ onAdd }) {
     const [name, setName] = useState('');
+    const MAX_LENGTH = 100;
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (name.trim()) {
-            onAdd(name.trim());
+        const trimmed = name.trim();
+        if (trimmed && trimmed.length <= MAX_LENGTH) {
+            onAdd(trimmed);
             setName('');
         }
     };
 
     return (
         <form className="add-form" onSubmit={handleSubmit}>
+            <label htmlFor="group-input" className="visually-hidden">Add new list</label>
             <input
+                id="group-input"
                 type="text"
                 className="add-input"
                 placeholder="Add a new list..."
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                maxLength={MAX_LENGTH}
             />
-            <button type="submit" className="add-btn">+</button>
+            <button type="submit" className="add-btn" aria-label="Add list">+</button>
         </form>
     );
 }
 
-// Main App Component
+// Today View Component
+function TodayView({ tasks, onToggle, onDelete, onAdd }) {
+    return (
+        <>
+            {tasks.map(task => (
+                <TaskItem
+                    key={task.id}
+                    task={task}
+                    onToggle={onToggle}
+                    onDelete={onDelete}
+                />
+            ))}
+            <AddTaskForm onAdd={onAdd} />
+        </>
+    );
+}
+
+// Lists View Component
+function ListsView({ groups, onDelete, onAdd }) {
+    return (
+        <>
+            {groups.map(group => (
+                <GroupItem
+                    key={group.id}
+                    group={group}
+                    onDelete={onDelete}
+                />
+            ))}
+            <AddGroupForm onAdd={onAdd} />
+        </>
+    );
+}
+
+// Main App Component (SINGLE INSTANCE)
 function App() {
-    const [tasks, setTasks] = useState(INITIAL_TASKS);
-    const [groups, setGroups] = useState(INITIAL_GROUPS);
+    // Load from localStorage or use defaults
+    const [tasks, setTasks] = useState(() =>
+        loadFromStorage(STORAGE_KEYS.TASKS, INITIAL_TASKS)
+    );
+    const [groups, setGroups] = useState(() =>
+        loadFromStorage(STORAGE_KEYS.GROUPS, INITIAL_GROUPS)
+    );
+
+    // Save to localStorage whenever state changes
+    useEffect(() => {
+        saveToStorage(STORAGE_KEYS.TASKS, tasks);
+    }, [tasks]);
+
+    useEffect(() => {
+        saveToStorage(STORAGE_KEYS.GROUPS, groups);
+    }, [groups]);
 
     const toggleTask = (id) => {
         setTasks(tasks.map(task =>
@@ -136,34 +233,23 @@ function App() {
         setGroups(groups.filter(group => group.id !== id));
     };
 
-    return (
-        <>
-            {/* Layer 1: Today List */}
-            <div id="today-tasks">
-                {tasks.map(task => (
-                    <TaskItem
-                        key={task.id}
-                        task={task}
-                        onToggle={toggleTask}
-                        onDelete={deleteTask}
-                    />
-                ))}
-                <AddTaskForm onAdd={addTask} />
-            </div>
-
-            {/* Layer 2: Groups */}
-            <div id="groups-content" style={{ display: 'none' }}>
-                {groups.map(group => (
-                    <GroupItem
-                        key={group.id}
-                        group={group}
-                        onDelete={deleteGroup}
-                    />
-                ))}
-                <AddGroupForm onAdd={addGroup} />
-            </div>
-        </>
-    );
+    return {
+        todayView: (
+            <TodayView
+                tasks={tasks}
+                onToggle={toggleTask}
+                onDelete={deleteTask}
+                onAdd={addTask}
+            />
+        ),
+        listsView: (
+            <ListsView
+                groups={groups}
+                onDelete={deleteGroup}
+                onAdd={addGroup}
+            />
+        )
+    };
 }
 
 // ========== VANILLA JS LAYER CONTROL ==========
@@ -200,13 +286,18 @@ function toggleMenu() {
     }
 }
 
-// ========== RENDER ==========
+// ========== RENDER (FIXED: Single instance, shared state) ==========
 document.addEventListener('DOMContentLoaded', () => {
+    // Create single App instance
+    const appInstance = App();
+
+    // Render Today view
     const todayContainer = document.getElementById('today-list');
     const root1 = ReactDOM.createRoot(todayContainer);
-    root1.render(<App />);
+    root1.render(appInstance.todayView);
 
+    // Render Lists view
     const groupsContainer = document.getElementById('groups-list');
     const root2 = ReactDOM.createRoot(groupsContainer);
-    root2.render(<App />);
+    root2.render(appInstance.listsView);
 });
