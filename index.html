@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Today - Focus</title>
+
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Favicon (SVG Inline) -->
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%2334C759'/></svg>">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Layer 1: Today (Focus View) -->
+        <div id="view-layer-1" class="view-layer view-active">
+            <div class="glass-card">
+                <h1 class="header">Today</h1>
+                <div class="task-list" id="today-list">
+                    <!-- Tasks injected by React -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Layer 2: Lists (Groups View) -->
+        <div id="view-layer-2" class="view-layer view-hidden">
+            <div class="glass-card">
+                <div class="nav-header">
+                    <button class="back-btn" onclick="switchLayer(1)">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M12 16L6 10L12 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </button>
+                    <h1 class="header">My Lists</h1>
+                </div>
+                <div class="list-groups" id="groups-list">
+                    <!-- Groups injected by React -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Menu Trigger -->
+        <div class="bottom-menu-trigger" onclick="toggleMenu()"></div>
+
+        <!-- Bottom Menu Sheet -->
+        <div class="bottom-menu-sheet" id="bottom-menu">
+            <div class="menu-handle"></div>
+            <div class="menu-content">
+                <button class="menu-item" onclick="switchLayer(1); toggleMenu();">
+                    <span class="menu-icon">📅</span>
+                    <span class="menu-label">Today</span>
+                </button>
+                <button class="menu-item" onclick="switchLayer(2); toggleMenu();">
+                    <span class="menu-icon">📋</span>
+                    <span class="menu-label">My Lists</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- React & Babel -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- App Logic -->
+    <script type="text/babel" src="app.js"></script>
+</body>
+
+</html>
