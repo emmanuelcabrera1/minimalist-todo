@@ -181,24 +181,15 @@ function ListsView({ groups, onDelete, onAdd }) {
     );
 }
 
-// Main App Component
-function App() {
-    // Load from localStorage or use defaults
+// Today Container Component
+function TodayContainer() {
     const [tasks, setTasks] = useState(() =>
         loadFromStorage(STORAGE_KEYS.TASKS, INITIAL_TASKS)
     );
-    const [groups, setGroups] = useState(() =>
-        loadFromStorage(STORAGE_KEYS.GROUPS, INITIAL_GROUPS)
-    );
 
-    // Save to localStorage whenever state changes
     useEffect(() => {
         saveToStorage(STORAGE_KEYS.TASKS, tasks);
     }, [tasks]);
-
-    useEffect(() => {
-        saveToStorage(STORAGE_KEYS.GROUPS, groups);
-    }, [groups]);
 
     const toggleTask = (id) => {
         setTasks(tasks.map(task =>
@@ -219,6 +210,26 @@ function App() {
         setTasks(tasks.filter(task => task.id !== id));
     };
 
+    return (
+        <TodayView
+            tasks={tasks}
+            onToggle={toggleTask}
+            onDelete={deleteTask}
+            onAdd={addTask}
+        />
+    );
+}
+
+// Groups Container Component
+function GroupsContainer() {
+    const [groups, setGroups] = useState(() =>
+        loadFromStorage(STORAGE_KEYS.GROUPS, INITIAL_GROUPS)
+    );
+
+    useEffect(() => {
+        saveToStorage(STORAGE_KEYS.GROUPS, groups);
+    }, [groups]);
+
     const addGroup = (name) => {
         const newGroup = {
             id: Date.now(),
@@ -233,34 +244,12 @@ function App() {
         setGroups(groups.filter(group => group.id !== id));
     };
 
-    // Get DOM containers for portals
-    const todayContainer = document.getElementById('today-list');
-    const groupsContainer = document.getElementById('groups-list');
-
-    if (!todayContainer || !groupsContainer) {
-        return null;
-    }
-
     return (
-        <>
-            {ReactDOM.createPortal(
-                <TodayView
-                    tasks={tasks}
-                    onToggle={toggleTask}
-                    onDelete={deleteTask}
-                    onAdd={addTask}
-                />,
-                todayContainer
-            )}
-            {ReactDOM.createPortal(
-                <ListsView
-                    groups={groups}
-                    onDelete={deleteGroup}
-                    onAdd={addGroup}
-                />,
-                groupsContainer
-            )}
-        </>
+        <ListsView
+            groups={groups}
+            onDelete={deleteGroup}
+            onAdd={addGroup}
+        />
     );
 }
 
@@ -298,15 +287,19 @@ function toggleMenu() {
     }
 }
 
-// ========== RENDER (FIXED: Proper React component with Portals) ==========
+// ========== RENDER (FIXED: Two separate roots, no portals) ==========
 document.addEventListener('DOMContentLoaded', () => {
-    // Create a hidden container for the React root
-    const appRoot = document.createElement('div');
-    appRoot.id = 'react-app-root';
-    appRoot.style.display = 'none';
-    document.body.appendChild(appRoot);
+    // Render Today view
+    const todayContainer = document.getElementById('today-list');
+    if (todayContainer) {
+        const todayRoot = ReactDOM.createRoot(todayContainer);
+        todayRoot.render(<TodayContainer />);
+    }
 
-    // Render App component - it will use portals to render into today-list and groups-list
-    const root = ReactDOM.createRoot(appRoot);
-    root.render(<App />);
+    // Render Groups view
+    const groupsContainer = document.getElementById('groups-list');
+    if (groupsContainer) {
+        const groupsRoot = ReactDOM.createRoot(groupsContainer);
+        groupsRoot.render(<GroupsContainer />);
+    }
 });
