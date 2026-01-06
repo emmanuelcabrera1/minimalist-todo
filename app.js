@@ -181,7 +181,7 @@ function ListsView({ groups, onDelete, onAdd }) {
     );
 }
 
-// Main App Component (SINGLE INSTANCE)
+// Main App Component
 function App() {
     // Load from localStorage or use defaults
     const [tasks, setTasks] = useState(() =>
@@ -233,23 +233,35 @@ function App() {
         setGroups(groups.filter(group => group.id !== id));
     };
 
-    return {
-        todayView: (
-            <TodayView
-                tasks={tasks}
-                onToggle={toggleTask}
-                onDelete={deleteTask}
-                onAdd={addTask}
-            />
-        ),
-        listsView: (
-            <ListsView
-                groups={groups}
-                onDelete={deleteGroup}
-                onAdd={addGroup}
-            />
-        )
-    };
+    // Get DOM containers for portals
+    const todayContainer = document.getElementById('today-list');
+    const groupsContainer = document.getElementById('groups-list');
+
+    if (!todayContainer || !groupsContainer) {
+        return null;
+    }
+
+    return (
+        <>
+            {ReactDOM.createPortal(
+                <TodayView
+                    tasks={tasks}
+                    onToggle={toggleTask}
+                    onDelete={deleteTask}
+                    onAdd={addTask}
+                />,
+                todayContainer
+            )}
+            {ReactDOM.createPortal(
+                <ListsView
+                    groups={groups}
+                    onDelete={deleteGroup}
+                    onAdd={addGroup}
+                />,
+                groupsContainer
+            )}
+        </>
+    );
 }
 
 // ========== VANILLA JS LAYER CONTROL ==========
@@ -286,18 +298,15 @@ function toggleMenu() {
     }
 }
 
-// ========== RENDER (FIXED: Single instance, shared state) ==========
+// ========== RENDER (FIXED: Proper React component with Portals) ==========
 document.addEventListener('DOMContentLoaded', () => {
-    // Create single App instance
-    const appInstance = App();
+    // Create a hidden container for the React root
+    const appRoot = document.createElement('div');
+    appRoot.id = 'react-app-root';
+    appRoot.style.display = 'none';
+    document.body.appendChild(appRoot);
 
-    // Render Today view
-    const todayContainer = document.getElementById('today-list');
-    const root1 = ReactDOM.createRoot(todayContainer);
-    root1.render(appInstance.todayView);
-
-    // Render Lists view
-    const groupsContainer = document.getElementById('groups-list');
-    const root2 = ReactDOM.createRoot(groupsContainer);
-    root2.render(appInstance.listsView);
+    // Render App component - it will use portals to render into today-list and groups-list
+    const root = ReactDOM.createRoot(appRoot);
+    root.render(<App />);
 });
