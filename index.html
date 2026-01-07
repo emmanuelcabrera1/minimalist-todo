@@ -98,6 +98,7 @@
         let currentLayer = 1;
         let isMenuOpen = false;
         let currentGroupId = null; // Track which group is being viewed
+        let navigationStack = []; // Track navigation breadcrumbs for infinite nesting
 
         // Storage keys (shared between vanilla JS and React)
         const STORAGE_KEYS = {
@@ -212,14 +213,14 @@
 
         // ========== DATA ==========
         const INITIAL_TASKS = [
-            { id: 1, text: 'Read clean code principles', completed: false, groupId: 1, showInToday: true },
-            { id: 2, text: 'Review system architecture', completed: false, groupId: 1, showInToday: false },
-            { id: 3, text: 'Meditate for 15 mins', completed: false, groupId: 2, showInToday: true },
-            { id: 4, text: 'Buy groceries', completed: false, groupId: 3, showInToday: false },
-            { id: 5, text: 'Call dentist', completed: false, groupId: 2, showInToday: false },
-            { id: 6, text: 'Finish project proposal', completed: false, groupId: 1, showInToday: false },
-            { id: 7, text: 'Workout for 30 mins', completed: false, groupId: 2, showInToday: false },
-            { id: 8, text: 'Buy milk', completed: false, groupId: 3, showInToday: false }
+            { id: 1, text: 'Read clean code principles', completed: false, groupId: 1, parentId: null, showInToday: true },
+            { id: 2, text: 'Review system architecture', completed: false, groupId: 1, parentId: null, showInToday: false },
+            { id: 3, text: 'Meditate for 15 mins', completed: false, groupId: 2, parentId: null, showInToday: true },
+            { id: 4, text: 'Buy groceries', completed: false, groupId: 3, parentId: null, showInToday: false },
+            { id: 5, text: 'Call dentist', completed: false, groupId: 2, parentId: null, showInToday: false },
+            { id: 6, text: 'Finish project proposal', completed: false, groupId: 1, parentId: null, showInToday: false },
+            { id: 7, text: 'Workout for 30 mins', completed: false, groupId: 2, parentId: null, showInToday: false },
+            { id: 8, text: 'Buy milk', completed: false, groupId: 3, parentId: null, showInToday: false }
         ];
 
         const INITIAL_GROUPS = [
@@ -385,8 +386,8 @@
             );
         }
 
-        // Group Task Item Component (with star toggle for showInToday)
-        function GroupTaskItem({ task, onToggle, onDelete, onToggleToday, onEdit }) {
+        // Group Task Item Component (with star toggle for showInToday and infinite nesting)
+        function GroupTaskItem({ task, onToggle, onDelete, onToggleToday, onEdit, onNavigate, hasChildren }) {
             const [isEditing, setIsEditing] = useState(false);
             const [editText, setEditText] = useState(task.text);
 
@@ -409,6 +410,15 @@
                     handleSave();
                 } else if (e.key === 'Escape') {
                     handleCancel();
+                }
+            };
+
+            const handleTextClick = () => {
+                // If task has children, navigate into it; otherwise edit
+                if (hasChildren) {
+                    onNavigate(task.id, task.text);
+                } else {
+                    setIsEditing(true);
                 }
             };
 
@@ -435,10 +445,11 @@
                         />
                     ) : (
                         <div
-                            className="task-text task-editable"
-                            onClick={() => setIsEditing(true)}
+                            className={`task-text ${hasChildren ? 'task-navigable' : 'task-editable'}`}
+                            onClick={handleTextClick}
                         >
                             {task.text}
+                            {hasChildren && <span className="nav-arrow">›</span>}
                         </div>
                     )}
                     <button
@@ -467,13 +478,27 @@
             );
         }
 
-        // Group Detail View Component
-        function GroupDetailView({ tasks, groupId, onToggle, onDelete, onAdd, onToggleToday, onEdit }) {
-            const groupTasks = tasks.filter(task => task.groupId === groupId);
+        // Group Detail View Component (supports infinite nesting)
+        function GroupDetailView({ tasks, groupId, parentTaskId, onToggle, onDelete, onAdd, onToggleToday, onEdit, onNavigate }) {
+            // Filter tasks based on context
+            const currentTasks = tasks.filter(task => {
+                if (parentTaskId === null) {
+                    // Show top-level tasks in the group
+                    return task.groupId === groupId && task.parentId === null;
+                } else {
+                    // Show children of the current parent task
+                    return task.parentId === parentTaskId;
+                }
+            });
+
+            // Helper to check if a task has children
+            const hasChildren = (taskId) => {
+                return tasks.some(t => t.parentId === taskId);
+            };
 
             return (
                 <>
-                    {groupTasks.map(task => (
+                    {currentTasks.map(task => (
                         <GroupTaskItem
                             key={task.id}
                             task={task}
@@ -481,6 +506,8 @@
                             onDelete={onDelete}
                             onToggleToday={onToggleToday}
                             onEdit={onEdit}
+                            onNavigate={onNavigate}
+                            hasChildren={hasChildren(task.id)}
                         />
                     ))}
                     <AddTaskForm onAdd={onAdd} />
@@ -608,10 +635,10 @@
                 return () => window.removeEventListener('storage-updated', handleStorageUpdate);
             }, []);
 
-            // Update group counts based on tasks
+            // Update group counts based on TOP-LEVEL tasks only (parentId === null)
             const groupsWithCounts = groups.map(group => ({
                 ...group,
-                count: tasks.filter(task => task.groupId === group.id).length
+                count: tasks.filter(task => task.groupId === group.id && task.parentId === null).length
             }));
 
             useEffect(() => {
@@ -657,12 +684,13 @@
             );
         }
 
-        // Group Detail Container Component
+        // Group Detail Container Component (with infinite nesting support)
         function GroupDetailContainer() {
             const [tasks, setTasks] = useState(() =>
                 loadFromStorage(STORAGE_KEYS.TASKS, INITIAL_TASKS)
             );
             const [currentGroup, setCurrentGroup] = useState(null);
+            const [navStack, setNavStack] = useState([]); // Navigation breadcrumb stack
 
             // Listen for storage updates from other components
             useEffect(() => {
@@ -683,6 +711,12 @@
             useEffect(() => {
                 const handleGroupSelected = (event) => {
                     setCurrentGroup(event.detail.groupId);
+                    setNavStack([]); // Reset navigation stack when entering a group
+                    // Update header
+                    const titleElement = document.getElementById('group-detail-title');
+                    if (titleElement) {
+                        titleElement.textContent = event.detail.groupName;
+                    }
                 };
                 window.addEventListener('group-selected', handleGroupSelected);
                 return () => window.removeEventListener('group-selected', handleGroupSelected);
@@ -709,22 +743,77 @@
                 console.log('[Task] Edited task:', id, 'New text:', newText);
             };
 
+            const navigateIntoTask = (taskId, taskName) => {
+                console.log('[Navigation] Entering task:', taskId, taskName);
+                // Add current context to navigation stack
+                setNavStack([...navStack, { id: taskId, name: taskName }]);
+                // Update header to show current task name
+                const titleElement = document.getElementById('group-detail-title');
+                if (titleElement) {
+                    titleElement.textContent = taskName;
+                }
+            };
+
+            const navigateBack = () => {
+                if (navStack.length === 0) {
+                    // At top level of group, go back to groups list
+                    switchLayer(2);
+                } else {
+                    // Go up one level in the task hierarchy
+                    const newStack = [...navStack];
+                    newStack.pop();
+                    setNavStack(newStack);
+                    // Update header
+                    const titleElement = document.getElementById('group-detail-title');
+                    if (titleElement) {
+                        if (newStack.length === 0) {
+                            // Back to group level - need to get group name
+                            const groups = loadFromStorage(STORAGE_KEYS.GROUPS, []);
+                            const group = groups.find(g => g.id === currentGroup);
+                            titleElement.textContent = group ? group.name : 'Group Tasks';
+                        } else {
+                            // Back to parent task
+                            titleElement.textContent = newStack[newStack.length - 1].name;
+                        }
+                    }
+                    console.log('[Navigation] Back to level:', newStack.length);
+                }
+            };
+
+            // Update back button behavior
+            useEffect(() => {
+                const backBtn = document.querySelector('#view-layer-3 .back-btn');
+                if (backBtn) {
+                    backBtn.onclick = navigateBack;
+                }
+            }, [navStack, currentGroup]);
+
             const addTask = (text) => {
                 if (!currentGroup) return;
+                const currentParentId = navStack.length > 0 ? navStack[navStack.length - 1].id : null;
                 const newTask = {
                     id: generateUniqueId(),
                     text: text,
                     completed: false,
                     groupId: currentGroup,
+                    parentId: currentParentId,
                     showInToday: false
                 };
                 setTasks([...tasks, newTask]);
-                console.log('[Task] Added new task to group:', newTask);
+                console.log('[Task] Added new task:', newTask);
             };
 
             const deleteTask = (id) => {
-                setTasks(tasks.filter(task => task.id !== id));
-                console.log('[Task] Deleted task:', id);
+                // Delete task and all its descendants
+                const deleteRecursive = (taskId) => {
+                    const childIds = tasks.filter(t => t.parentId === taskId).map(t => t.id);
+                    childIds.forEach(childId => deleteRecursive(childId));
+                    return [taskId, ...childIds.flatMap(deleteRecursive)];
+                };
+
+                const idsToDelete = [id, ...tasks.filter(t => t.parentId === id).map(t => t.id)];
+                setTasks(tasks.filter(task => !idsToDelete.includes(task.id)));
+                console.log('[Task] Deleted task and children:', id);
             };
 
             if (!currentGroup) {
@@ -733,15 +822,20 @@
                 </div>;
             }
 
+            // Determine current parent context
+            const currentParentId = navStack.length > 0 ? navStack[navStack.length - 1].id : null;
+
             return (
                 <GroupDetailView
                     tasks={tasks}
                     groupId={currentGroup}
+                    parentTaskId={currentParentId}
                     onToggle={toggleTask}
                     onDelete={deleteTask}
                     onAdd={addTask}
                     onToggleToday={toggleTodayStatus}
                     onEdit={editTask}
+                    onNavigate={navigateIntoTask}
                 />
             );
         }
