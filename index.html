@@ -376,8 +376,9 @@
         }
 
         // ========== RENDER ==========
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('[App Init] DOM Content Loaded - Starting React initialization...');
+        // ========== RENDER ==========
+        const initApp = () => {
+            console.log('[App Init] Starting React initialization...');
 
             try {
                 // Verify React is loaded
@@ -421,7 +422,14 @@
                 errorMsg.innerHTML = `<strong>App Error</strong><br>Failed to load. Check console for details.<br><small>${error.message}</small>`;
                 document.body.appendChild(errorMsg);
             }
-        });
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            // DOM already ready, run immediately
+            initApp();
+        }
     </script>
 </body>
 
