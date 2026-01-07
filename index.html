@@ -77,6 +77,10 @@
                     <span class="menu-icon">📋</span>
                     <span class="menu-label">My Lists</span>
                 </button>
+                <button class="menu-item" onclick="refreshApp(); toggleMenu();">
+                    <span class="menu-icon">🔄</span>
+                    <span class="menu-label">Refresh</span>
+                </button>
             </div>
         </div>
     </div>
@@ -149,6 +153,11 @@
             } else {
                 menu.classList.remove('open');
             }
+        }
+
+        function refreshApp() {
+            console.log('[App] Manual refresh triggered - reloading page...');
+            window.location.reload();
         }
 
         // AUTO-REFRESH: Refresh when user returns to the tab/app
