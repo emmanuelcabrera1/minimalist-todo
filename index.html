@@ -95,6 +95,12 @@
         let isMenuOpen = false;
         let currentGroupId = null; // Track which group is being viewed
 
+        // Storage keys (shared between vanilla JS and React)
+        const STORAGE_KEYS = {
+            TASKS: 'minimalist-todo-tasks',
+            GROUPS: 'minimalist-todo-groups'
+        };
+
         function switchLayer(layerId, groupId = null) {
             currentLayer = layerId;
 
@@ -123,6 +129,15 @@
                 layer3.classList.add('view-active');
                 layer3.classList.remove('view-hidden');
             }
+
+            // AUTO-REFRESH: Trigger refresh when switching layers
+            console.log('[Auto-Refresh] Layer switched to:', layerId);
+            window.dispatchEvent(new CustomEvent('storage-updated', {
+                detail: { key: STORAGE_KEYS.TASKS }
+            }));
+            window.dispatchEvent(new CustomEvent('storage-updated', {
+                detail: { key: STORAGE_KEYS.GROUPS }
+            }));
         }
 
         function toggleMenu() {
@@ -135,6 +150,19 @@
                 menu.classList.remove('open');
             }
         }
+
+        // AUTO-REFRESH: Refresh when user returns to the tab/app
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                console.log('[Auto-Refresh] User returned to tab - refreshing data');
+                window.dispatchEvent(new CustomEvent('storage-updated', {
+                    detail: { key: STORAGE_KEYS.TASKS }
+                }));
+                window.dispatchEvent(new CustomEvent('storage-updated', {
+                    detail: { key: STORAGE_KEYS.GROUPS }
+                }));
+            }
+        });
     </script>
 
     <!-- App Logic with JSX (INLINED for Safari/iOS compatibility) -->
@@ -146,10 +174,7 @@
         const { useState, useEffect } = React;
 
         // ========== STORAGE HELPERS ==========
-        const STORAGE_KEYS = {
-            TASKS: 'minimalist-todo-tasks',
-            GROUPS: 'minimalist-todo-groups'
-        };
+        // Note: STORAGE_KEYS is defined in vanilla JS section above
 
         // Generate unique ID to prevent collisions (timestamp + random) - Safari compatible
         const generateUniqueId = () => {
