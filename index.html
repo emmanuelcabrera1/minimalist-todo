@@ -213,19 +213,34 @@
 
         // ========== DATA ==========
         const INITIAL_TASKS = [
-            { id: 1, text: 'Read clean code principles', completed: false, groupId: 1, parentId: null, showInToday: true },
-            { id: 2, text: 'Review system architecture', completed: false, groupId: 1, parentId: null, showInToday: false },
-            { id: 3, text: 'Meditate for 15 mins', completed: false, groupId: 2, parentId: null, showInToday: true },
+            // Top-level tasks in Work group
+            { id: 1, text: 'Q1 Planning', completed: false, groupId: 1, parentId: null, showInToday: true },
+            { id: 2, text: 'Weekly Standup', completed: false, groupId: 1, parentId: null, showInToday: false },
+
+            // Children of "Q1 Planning" (task 1)
+            { id: 9, text: 'Budget Review', completed: false, groupId: 1, parentId: 1, showInToday: false },
+            { id: 10, text: 'Team Goals', completed: false, groupId: 1, parentId: 1, showInToday: false },
+
+            // Children of "Budget Review" (task 9) - demonstrating deeper nesting
+            { id: 11, text: 'Analyze Q4 expenses', completed: false, groupId: 1, parentId: 9, showInToday: false },
+            { id: 12, text: 'Forecast Q2', completed: false, groupId: 1, parentId: 9, showInToday: false },
+
+            // Top-level tasks in Personal group
+            { id: 3, text: 'Home Renovation', completed: false, groupId: 2, parentId: null, showInToday: false },
+            { id: 5, text: 'Meditate for 15 mins', completed: false, groupId: 2, parentId: null, showInToday: true },
+
+            // Children of "Home Renovation" (task 3)
+            { id: 13, text: 'Kitchen remodel', completed: false, groupId: 2, parentId: 3, showInToday: false },
+            { id: 14, text: 'Bathroom update', completed: false, groupId: 2, parentId: 3, showInToday: false },
+
+            // Top-level tasks in Groceries group
             { id: 4, text: 'Buy groceries', completed: false, groupId: 3, parentId: null, showInToday: false },
-            { id: 5, text: 'Call dentist', completed: false, groupId: 2, parentId: null, showInToday: false },
-            { id: 6, text: 'Finish project proposal', completed: false, groupId: 1, parentId: null, showInToday: false },
-            { id: 7, text: 'Workout for 30 mins', completed: false, groupId: 2, parentId: null, showInToday: false },
             { id: 8, text: 'Buy milk', completed: false, groupId: 3, parentId: null, showInToday: false }
         ];
 
         const INITIAL_GROUPS = [
-            { id: 1, name: 'Work', count: 3, color: '#34C759' },
-            { id: 2, name: 'Personal', count: 3, color: '#007AFF' },
+            { id: 1, name: 'Work', count: 2, color: '#34C759' },
+            { id: 2, name: 'Personal', count: 2, color: '#007AFF' },
             { id: 3, name: 'Groceries', count: 2, color: '#FF9500' }
         ];
 
