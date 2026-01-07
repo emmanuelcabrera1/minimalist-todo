@@ -204,19 +204,63 @@
             return Date.now() + '-' + Math.random().toString(36).substring(2, 11);
         };
 
+        /**
+         * Detects if a task is part of a circular parent-child reference.
+         * Traverses up the parentId chain and checks for revisited nodes.
+         * @param {string|number} taskId - The ID of the task to check.
+         * @param {Array} allTasks - The full array of tasks.
+         * @returns {boolean} - True if a cycle is detected, false otherwise.
+         */
+        const detectCycle = (taskId, allTasks) => {
+            const visited = new Set();
+            let currentId = taskId;
+
+            while (currentId !== null) {
+                if (visited.has(currentId)) {
+                    return true; // Cycle detected
+                }
+                visited.add(currentId);
+
+                const currentTask = allTasks.find(t => t.id === currentId);
+                if (!currentTask) break; // Task not found, no cycle from here
+
+                currentId = currentTask.parentId;
+            }
+            return false;
+        };
+
+        /**
+         * Sanitizes the task array by breaking any circular references.
+         * Tasks involved in a cycle have their parentId set to null.
+         * @param {Array} tasks - The array of tasks to sanitize.
+         * @returns {Array} - The sanitized array of tasks.
+         */
+        const sanitizeTasks = (tasks) => {
+            return tasks.map(task => {
+                if (task.parentId !== null && detectCycle(task.id, tasks)) {
+                    console.warn(`[Cycle Detection] Breaking cycle for task: ${task.id} ("${task.text}")`);
+                    return { ...task, parentId: null };
+                }
+                return task;
+            });
+        };
+
         const loadFromStorage = (key, fallback) => {
             try {
                 const stored = localStorage.getItem(key);
                 if (!stored) return fallback;
 
-                const data = JSON.parse(stored);
+                let data = JSON.parse(stored);
 
                 // DATA MIGRATION: Add parentId field to old tasks that don't have it
                 if (key === STORAGE_KEYS.TASKS && Array.isArray(data)) {
-                    return data.map(task => ({
+                    data = data.map(task => ({
                         ...task,
                         parentId: task.parentId !== undefined ? task.parentId : null
                     }));
+
+                    // CYCLE DETECTION: Sanitize tasks to break any circular references
+                    data = sanitizeTasks(data);
                 }
 
                 return data;
@@ -271,32 +315,11 @@
 
         // ========== COMPONENTS ==========
 
-        // Task Item Component
-        function TaskItem({ task, onToggle, onDelete, onEdit }) {
-            const [isEditing, setIsEditing] = useState(false);
-            const [editText, setEditText] = useState(task.text);
-
-            const handleSave = () => {
-                const trimmed = editText.trim();
-                if (trimmed && trimmed !== task.text) {
-                    onEdit(task.id, trimmed);
-                }
-                setIsEditing(false);
-            };
-
-            const handleCancel = () => {
-                setEditText(task.text); // Reset to original
-                setIsEditing(false);
-            };
-
-            const handleKeyDown = (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    handleSave();
-                } else if (e.key === 'Escape') {
-                    handleCancel();
-                }
-            };
+        // Task Item Component (for Today view - navigates to group)
+        function TaskItem({ task, onToggle, onDelete, onNavigateToGroup, groups }) {
+            // Find the group name for this task
+            const group = groups.find(g => g.id === task.groupId);
+            const groupName = group ? group.name : 'Unknown';
 
             return (
                 <div className={`task-item ${task.completed ? 'completed' : ''}`}>
@@ -308,25 +331,14 @@
                         tabIndex={0}
                         onKeyPress={(e) => e.key === 'Enter' && onToggle(task.id)}
                     />
-                    {isEditing ? (
-                        <input
-                            type="text"
-                            className="task-edit-input"
-                            value={editText}
-                            onChange={(e) => setEditText(e.target.value)}
-                            onBlur={handleSave}
-                            onKeyDown={handleKeyDown}
-                            autoFocus
-                            maxLength={500}
-                        />
-                    ) : (
-                        <div
-                            className="task-text task-editable"
-                            onClick={() => setIsEditing(true)}
-                        >
-                            {task.text}
-                        </div>
-                    )}
+                    <div
+                        className="task-text task-navigable"
+                        onClick={() => onNavigateToGroup(task)}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        <div>{task.text}</div>
+                        <span className="task-group-label">{groupName}</span>
+                    </div>
                     <button
                         className="delete-btn"
                         onClick={() => onDelete(task.id)}
@@ -454,12 +466,8 @@
             };
 
             const handleTextClick = () => {
-                // If task has children, navigate into it; otherwise edit
-                if (hasChildren) {
-                    onNavigate(task.id, task.text);
-                } else {
-                    setIsEditing(true);
-                }
+                // Always edit when clicking text
+                setIsEditing(true);
             };
 
             return (
@@ -485,13 +493,19 @@
                         />
                     ) : (
                         <div
-                            className={`task-text ${hasChildren ? 'task-navigable' : 'task-editable'}`}
+                            className="task-text task-editable"
                             onClick={handleTextClick}
                         >
                             {task.text}
-                            {hasChildren && <span className="nav-arrow">›</span>}
                         </div>
                     )}
+                    <button
+                        className="nav-btn"
+                        onClick={() => onNavigate(task.id, task.text)}
+                        aria-label={`Add subtasks to: ${task.text}`}
+                    >
+                        ›
+                    </button>
                     <button
                         className="star-btn"
                         onClick={() => onToggleToday(task.id)}
@@ -556,7 +570,7 @@
         }
 
         // Today View Component
-        function TodayView({ tasks, onToggle, onDelete, onEdit }) {
+        function TodayView({ tasks, groups, onToggle, onDelete, onNavigateToGroup }) {
             // Only show tasks marked for today
             const todayTasks = tasks.filter(task => task.showInToday);
 
@@ -577,9 +591,10 @@
                         <TaskItem
                             key={task.id}
                             task={task}
+                            groups={groups}
                             onToggle={onToggle}
                             onDelete={onDelete}
-                            onEdit={onEdit}
+                            onNavigateToGroup={onNavigateToGroup}
                         />
                     ))}
                 </>
@@ -608,12 +623,17 @@
             const [tasks, setTasks] = useState(() =>
                 loadFromStorage(STORAGE_KEYS.TASKS, INITIAL_TASKS)
             );
+            const [groups, setGroups] = useState(() =>
+                loadFromStorage(STORAGE_KEYS.GROUPS, INITIAL_GROUPS)
+            );
 
             // Listen for storage updates from other components
             useEffect(() => {
                 const handleStorageUpdate = (event) => {
                     if (event.detail.key === STORAGE_KEYS.TASKS) {
                         setTasks(loadFromStorage(STORAGE_KEYS.TASKS, INITIAL_TASKS));
+                    } else if (event.detail.key === STORAGE_KEYS.GROUPS) {
+                        setGroups(loadFromStorage(STORAGE_KEYS.GROUPS, INITIAL_GROUPS));
                     }
                 };
                 window.addEventListener('storage-updated', handleStorageUpdate);
@@ -631,24 +651,32 @@
                 console.log('[Task] Toggled task:', id);
             };
 
-            const editTask = (id, newText) => {
-                setTasks(tasks.map(task =>
-                    task.id === id ? { ...task, text: newText } : task
-                ));
-                console.log('[Task] Edited task:', id, 'New text:', newText);
-            };
-
             const deleteTask = (id) => {
                 setTasks(tasks.filter(task => task.id !== id));
                 console.log('[Task] Deleted task:', id);
             };
 
+            const navigateToGroup = (task) => {
+                console.log('[Navigation] Jumping to group for task:', task.id, task.text);
+                // Find the group
+                const group = groups.find(g => g.id === task.groupId);
+                if (group) {
+                    // Dispatch group selection event (same as clicking a group)
+                    window.dispatchEvent(new CustomEvent('group-selected', {
+                        detail: { groupId: group.id, groupName: group.name }
+                    }));
+                    // Switch to layer 3 (group detail view)
+                    switchLayer(3, group.id);
+                }
+            };
+
             return (
                 <TodayView
                     tasks={tasks}
+                    groups={groups}
                     onToggle={toggleTask}
                     onDelete={deleteTask}
-                    onEdit={editTask}
+                    onNavigateToGroup={navigateToGroup}
                 />
             );
         }

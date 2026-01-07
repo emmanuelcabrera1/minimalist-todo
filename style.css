@@ -198,6 +198,14 @@ body {
     flex: 1;
 }
 
+/* Group Label (shown in Today view) */
+.task-group-label {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    margin-left: auto;
+}
+
 /* Editable Task Text - Click to edit hint */
 .task-editable {
     cursor: text;
@@ -253,6 +261,36 @@ body {
 .task-edit-input:focus {
     background: white;
     box-shadow: 0 0 0 3px rgba(52, 199, 89, 0.1);
+}
+
+/* Navigate Button (for entering subtask view) */
+.nav-btn {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(52, 199, 89, 0.1);
+    color: var(--accent-color);
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.5;
+}
+
+.task-item:hover .nav-btn {
+    opacity: 1;
+}
+
+.nav-btn:hover {
+    background: var(--accent-color);
+    color: white;
+    transform: scale(1.1);
+    opacity: 1;
 }
 
 /* Delete Button */
