@@ -438,10 +438,14 @@
             );
         }
 
-        // Group Task Item Component (with star toggle for showInToday and infinite nesting)
-        function GroupTaskItem({ task, onToggle, onDelete, onToggleToday, onEdit, onNavigate, hasChildren }) {
+        // Group Task Item Component (with star toggle for showInToday, infinite nesting, and context menu)
+        function GroupTaskItem({ task, onToggle, onDelete, onToggleToday, onEdit, onNavigate, onMoveTask, hasChildren }) {
             const [isEditing, setIsEditing] = useState(false);
             const [editText, setEditText] = useState(task.text);
+            const [showMenu, setShowMenu] = useState(false);
+            const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+            const longPressTimer = React.useRef(null);
+            const isLongPress = React.useRef(false);
 
             const handleSave = () => {
                 const trimmed = editText.trim();
@@ -452,7 +456,7 @@
             };
 
             const handleCancel = () => {
-                setEditText(task.text); // Reset to original
+                setEditText(task.text);
                 setIsEditing(false);
             };
 
@@ -465,75 +469,148 @@
                 }
             };
 
-            const handleTextClick = () => {
-                // Always edit when clicking text
-                setIsEditing(true);
+            // Long-press detection
+            const handlePressStart = (e) => {
+                isLongPress.current = false;
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+                longPressTimer.current = setTimeout(() => {
+                    isLongPress.current = true;
+                    setMenuPosition({ x: clientX, y: clientY });
+                    setShowMenu(true);
+                    // Haptic feedback if available
+                    if (navigator.vibrate) navigator.vibrate(50);
+                }, 500);
+            };
+
+            const handlePressEnd = (e) => {
+                clearTimeout(longPressTimer.current);
+                if (!isLongPress.current && !showMenu) {
+                    // Short tap - trigger edit
+                    setIsEditing(true);
+                }
+            };
+
+            const handlePressMove = () => {
+                // Cancel long-press if user moves (scrolling)
+                clearTimeout(longPressTimer.current);
+            };
+
+            const handleMenuAction = (action) => {
+                setShowMenu(false);
+                if (action === 'edit') {
+                    setIsEditing(true);
+                } else if (action === 'top' || action === 'bottom') {
+                    onMoveTask(task.id, action);
+                }
             };
 
             return (
-                <div className={`task-item ${task.completed ? 'completed' : ''}`}>
-                    <div
-                        className={`checkbox ${task.completed ? 'checked' : ''}`}
-                        onClick={() => onToggle(task.id)}
-                        role="checkbox"
-                        aria-checked={task.completed}
-                        tabIndex={0}
-                        onKeyPress={(e) => e.key === 'Enter' && onToggle(task.id)}
-                    />
-                    {isEditing ? (
-                        <input
-                            type="text"
-                            className="task-edit-input"
-                            value={editText}
-                            onChange={(e) => setEditText(e.target.value)}
-                            onBlur={handleSave}
-                            onKeyDown={handleKeyDown}
-                            autoFocus
-                            maxLength={500}
-                        />
-                    ) : (
+                <>
+                    <div className={`task-item ${task.completed ? 'completed' : ''}`}>
                         <div
-                            className="task-text task-editable"
-                            onClick={handleTextClick}
+                            className={`checkbox ${task.completed ? 'checked' : ''}`}
+                            onClick={() => onToggle(task.id)}
+                            role="checkbox"
+                            aria-checked={task.completed}
+                            tabIndex={0}
+                            onKeyPress={(e) => e.key === 'Enter' && onToggle(task.id)}
+                        />
+                        {isEditing ? (
+                            <input
+                                type="text"
+                                className="task-edit-input"
+                                value={editText}
+                                onChange={(e) => setEditText(e.target.value)}
+                                onBlur={handleSave}
+                                onKeyDown={handleKeyDown}
+                                autoFocus
+                                maxLength={500}
+                            />
+                        ) : (
+                            <div
+                                className="task-text task-editable"
+                                onTouchStart={handlePressStart}
+                                onTouchEnd={handlePressEnd}
+                                onTouchMove={handlePressMove}
+                                onMouseDown={handlePressStart}
+                                onMouseUp={handlePressEnd}
+                                onMouseLeave={() => clearTimeout(longPressTimer.current)}
+                                onContextMenu={(e) => {
+                                    e.preventDefault();
+                                    setMenuPosition({ x: e.clientX, y: e.clientY });
+                                    setShowMenu(true);
+                                }}
+                            >
+                                {task.text}
+                            </div>
+                        )}
+                        <button
+                            className="nav-btn"
+                            onClick={() => onNavigate(task.id, task.text)}
+                            aria-label={`Add subtasks to: ${task.text}`}
                         >
-                            {task.text}
-                        </div>
+                            ›
+                        </button>
+                        <button
+                            className="star-btn"
+                            onClick={() => onToggleToday(task.id)}
+                            aria-label={task.showInToday ? "Remove from Today" : "Add to Today"}
+                            style={{
+                                background: 'none',
+                                border: 'none',
+                                fontSize: '20px',
+                                cursor: 'pointer',
+                                padding: '5px',
+                                marginRight: '5px'
+                            }}
+                        >
+                            {task.showInToday ? '⭐' : '☆'}
+                        </button>
+                        <button
+                            className="delete-btn"
+                            onClick={() => onDelete(task.id)}
+                            aria-label={`Delete task: ${task.text}`}
+                        >
+                            ×
+                        </button>
+                    </div>
+                    {showMenu && (
+                        <>
+                            <div
+                                className="context-menu-overlay"
+                                onClick={() => setShowMenu(false)}
+                            />
+                            <div
+                                className="context-menu"
+                                style={{
+                                    position: 'fixed',
+                                    left: Math.min(menuPosition.x, window.innerWidth - 160),
+                                    top: Math.min(menuPosition.y, window.innerHeight - 180)
+                                }}
+                            >
+                                <button className="context-menu-item" onClick={() => handleMenuAction('edit')}>
+                                    📝 Edit
+                                </button>
+                                <button className="context-menu-item" onClick={() => handleMenuAction('top')}>
+                                    ⬆️ Move to Top
+                                </button>
+                                <button className="context-menu-item" onClick={() => handleMenuAction('bottom')}>
+                                    ⬇️ Move to End
+                                </button>
+                                <button className="context-menu-item cancel" onClick={() => setShowMenu(false)}>
+                                    ✕ Cancel
+                                </button>
+                            </div>
+                        </>
                     )}
-                    <button
-                        className="nav-btn"
-                        onClick={() => onNavigate(task.id, task.text)}
-                        aria-label={`Add subtasks to: ${task.text}`}
-                    >
-                        ›
-                    </button>
-                    <button
-                        className="star-btn"
-                        onClick={() => onToggleToday(task.id)}
-                        aria-label={task.showInToday ? "Remove from Today" : "Add to Today"}
-                        style={{
-                            background: 'none',
-                            border: 'none',
-                            fontSize: '20px',
-                            cursor: 'pointer',
-                            padding: '5px',
-                            marginRight: '5px'
-                        }}
-                    >
-                        {task.showInToday ? '⭐' : '☆'}
-                    </button>
-                    <button
-                        className="delete-btn"
-                        onClick={() => onDelete(task.id)}
-                        aria-label={`Delete task: ${task.text}`}
-                    >
-                        ×
-                    </button>
-                </div>
+                </>
             );
         }
 
         // Group Detail View Component (supports infinite nesting)
-        function GroupDetailView({ tasks, groupId, parentTaskId, onToggle, onDelete, onAdd, onToggleToday, onEdit, onNavigate }) {
+        function GroupDetailView({ tasks, groupId, parentTaskId, onToggle, onDelete, onAdd, onToggleToday, onEdit, onNavigate, onMoveTask }) {
             // Filter tasks based on context
             const currentTasks = tasks.filter(task => {
                 if (parentTaskId === null) {
@@ -561,6 +638,7 @@
                             onToggleToday={onToggleToday}
                             onEdit={onEdit}
                             onNavigate={onNavigate}
+                            onMoveTask={onMoveTask}
                             hasChildren={hasChildren(task.id)}
                         />
                     ))}
@@ -884,6 +962,44 @@
                 console.log('[Task] Deleted task and children:', id);
             };
 
+            // Move task to top or bottom within its sibling group
+            const moveTask = (taskId, direction) => {
+                const taskToMove = tasks.find(t => t.id === taskId);
+                if (!taskToMove) return;
+
+                // Get siblings (same parentId and groupId)
+                const siblings = tasks.filter(t =>
+                    t.parentId === taskToMove.parentId && t.groupId === taskToMove.groupId
+                );
+                const siblingIds = siblings.map(t => t.id);
+                const currentIndex = siblingIds.indexOf(taskId);
+
+                if (direction === 'top' && currentIndex > 0) {
+                    // Move to first position among siblings
+                    const newTasks = tasks.filter(t => t.id !== taskId);
+                    // Find first sibling in the array and insert before it
+                    const firstSiblingIndex = newTasks.findIndex(t =>
+                        t.parentId === taskToMove.parentId && t.groupId === taskToMove.groupId
+                    );
+                    newTasks.splice(firstSiblingIndex, 0, taskToMove);
+                    setTasks(newTasks);
+                    console.log('[Task] Moved to top:', taskId);
+                } else if (direction === 'bottom' && currentIndex < siblings.length - 1) {
+                    // Move to last position among siblings
+                    const newTasks = tasks.filter(t => t.id !== taskId);
+                    // Find last sibling index and insert after it
+                    let lastSiblingIndex = -1;
+                    newTasks.forEach((t, i) => {
+                        if (t.parentId === taskToMove.parentId && t.groupId === taskToMove.groupId) {
+                            lastSiblingIndex = i;
+                        }
+                    });
+                    newTasks.splice(lastSiblingIndex + 1, 0, taskToMove);
+                    setTasks(newTasks);
+                    console.log('[Task] Moved to bottom:', taskId);
+                }
+            };
+
             if (!currentGroup) {
                 return <div style={{ textAlign: 'center', padding: '40px 20px', color: '#8E8E93' }}>
                     Select a group to view tasks
@@ -904,6 +1020,7 @@
                     onToggleToday={toggleTodayStatus}
                     onEdit={editTask}
                     onNavigate={navigateIntoTask}
+                    onMoveTask={moveTask}
                 />
             );
         }
