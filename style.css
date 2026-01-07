@@ -570,6 +570,34 @@ body {
     margin-right: 4px;
 }
 
+/* Edit Button */
+.edit-btn {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(52, 199, 89, 0.1);
+    color: var(--accent-color);
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 4px;
+}
+
+.edit-btn:hover {
+    background: var(--accent-color);
+    color: white;
+    transform: scale(1.1);
+}
+
+.edit-btn:active {
+    transform: scale(0.95);
+}
+
 /* Highlight task when arrows are showing */
 .task-item.show-arrows {
     background: rgba(0, 122, 255, 0.05);

@@ -439,10 +439,9 @@
         }
 
         // Group Task Item Component (with star toggle for showInToday, infinite nesting, and move arrows)
-        function GroupTaskItem({ task, onToggle, onDelete, onToggleToday, onEdit, onNavigate, onMoveTask, hasChildren }) {
+        function GroupTaskItem({ task, onToggle, onDelete, onToggleToday, onEdit, onNavigate, onMoveTask, hasChildren, isSelected, onSelect }) {
             const [isEditing, setIsEditing] = useState(false);
             const [editText, setEditText] = useState(task.text);
-            const [showArrows, setShowArrows] = useState(false);
 
             const handleSave = () => {
                 const trimmed = editText.trim();
@@ -466,31 +465,29 @@
                 }
             };
 
-            // Click on task text toggles arrow buttons
+            // Click on task text toggles arrow buttons (only for this task)
             const handleTextClick = () => {
-                setShowArrows(!showArrows);
-            };
-
-            // Double-click to edit
-            const handleDoubleClick = () => {
-                setShowArrows(false);
-                setIsEditing(true);
+                onSelect(isSelected ? null : task.id);
             };
 
             const handleMoveUp = (e) => {
                 e.stopPropagation();
-                onMoveTask(task.id, 'top');
-                setShowArrows(false);
+                onMoveTask(task.id, 'up');
             };
 
             const handleMoveDown = (e) => {
                 e.stopPropagation();
-                onMoveTask(task.id, 'bottom');
-                setShowArrows(false);
+                onMoveTask(task.id, 'down');
+            };
+
+            const handleEditClick = (e) => {
+                e.stopPropagation();
+                onSelect(null);
+                setIsEditing(true);
             };
 
             return (
-                <div className={`task-item ${task.completed ? 'completed' : ''} ${showArrows ? 'show-arrows' : ''}`}>
+                <div className={`task-item ${task.completed ? 'completed' : ''} ${isSelected ? 'show-arrows' : ''}`}>
                     <div
                         className={`checkbox ${task.completed ? 'checked' : ''}`}
                         onClick={() => onToggle(task.id)}
@@ -514,26 +511,32 @@
                         <div
                             className="task-text task-editable"
                             onClick={handleTextClick}
-                            onDoubleClick={handleDoubleClick}
                         >
                             {task.text}
                         </div>
                     )}
-                    {showArrows && (
+                    {isSelected && (
                         <>
                             <button
                                 className="move-btn move-up"
                                 onClick={handleMoveUp}
-                                aria-label="Move to top"
+                                aria-label="Move up"
                             >
                                 ↑
                             </button>
                             <button
                                 className="move-btn move-down"
                                 onClick={handleMoveDown}
-                                aria-label="Move to bottom"
+                                aria-label="Move down"
                             >
                                 ↓
+                            </button>
+                            <button
+                                className="edit-btn"
+                                onClick={handleEditClick}
+                                aria-label="Edit task"
+                            >
+                                ✏️
                             </button>
                         </>
                     )}
@@ -572,6 +575,8 @@
 
         // Group Detail View Component (supports infinite nesting)
         function GroupDetailView({ tasks, groupId, parentTaskId, onToggle, onDelete, onAdd, onToggleToday, onEdit, onNavigate, onMoveTask }) {
+            const [selectedTaskId, setSelectedTaskId] = useState(null);
+
             // Filter tasks based on context
             const currentTasks = tasks.filter(task => {
                 if (parentTaskId === null) {
@@ -601,6 +606,8 @@
                             onNavigate={onNavigate}
                             onMoveTask={onMoveTask}
                             hasChildren={hasChildren(task.id)}
+                            isSelected={selectedTaskId === task.id}
+                            onSelect={setSelectedTaskId}
                         />
                     ))}
                     <AddTaskForm onAdd={onAdd} />
@@ -923,42 +930,41 @@
                 console.log('[Task] Deleted task and children:', id);
             };
 
-            // Move task to top or bottom within its sibling group
+            // Move task up or down by ONE position within its sibling group
             const moveTask = (taskId, direction) => {
                 const taskToMove = tasks.find(t => t.id === taskId);
                 if (!taskToMove) return;
 
-                // Get siblings (same parentId and groupId)
-                const siblings = tasks.filter(t =>
-                    t.parentId === taskToMove.parentId && t.groupId === taskToMove.groupId
-                );
-                const siblingIds = siblings.map(t => t.id);
-                const currentIndex = siblingIds.indexOf(taskId);
+                // Get sibling IDs in their current order within the tasks array
+                const siblingIds = tasks
+                    .filter(t => t.parentId === taskToMove.parentId && t.groupId === taskToMove.groupId)
+                    .map(t => t.id);
 
-                if (direction === 'top' && currentIndex > 0) {
-                    // Move to first position among siblings
-                    const newTasks = tasks.filter(t => t.id !== taskId);
-                    // Find first sibling in the array and insert before it
-                    const firstSiblingIndex = newTasks.findIndex(t =>
-                        t.parentId === taskToMove.parentId && t.groupId === taskToMove.groupId
-                    );
-                    newTasks.splice(firstSiblingIndex, 0, taskToMove);
-                    setTasks(newTasks);
-                    console.log('[Task] Moved to top:', taskId);
-                } else if (direction === 'bottom' && currentIndex < siblings.length - 1) {
-                    // Move to last position among siblings
-                    const newTasks = tasks.filter(t => t.id !== taskId);
-                    // Find last sibling index and insert after it
-                    let lastSiblingIndex = -1;
-                    newTasks.forEach((t, i) => {
-                        if (t.parentId === taskToMove.parentId && t.groupId === taskToMove.groupId) {
-                            lastSiblingIndex = i;
-                        }
-                    });
-                    newTasks.splice(lastSiblingIndex + 1, 0, taskToMove);
-                    setTasks(newTasks);
-                    console.log('[Task] Moved to bottom:', taskId);
+                const currentPosInSiblings = siblingIds.indexOf(taskId);
+
+                // Calculate new position
+                let newPosInSiblings;
+                if (direction === 'up' && currentPosInSiblings > 0) {
+                    newPosInSiblings = currentPosInSiblings - 1;
+                } else if (direction === 'down' && currentPosInSiblings < siblingIds.length - 1) {
+                    newPosInSiblings = currentPosInSiblings + 1;
+                } else {
+                    return; // Can't move further
                 }
+
+                // Get the task we're swapping with
+                const swapWithId = siblingIds[newPosInSiblings];
+
+                // Find their positions in the full tasks array
+                const taskIndex = tasks.findIndex(t => t.id === taskId);
+                const swapIndex = tasks.findIndex(t => t.id === swapWithId);
+
+                // Swap the two tasks
+                const newTasks = [...tasks];
+                [newTasks[taskIndex], newTasks[swapIndex]] = [newTasks[swapIndex], newTasks[taskIndex]];
+
+                setTasks(newTasks);
+                console.log(`[Task] Moved ${direction}:`, taskId);
             };
 
             if (!currentGroup) {
