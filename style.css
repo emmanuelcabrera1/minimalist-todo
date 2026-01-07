@@ -294,6 +294,7 @@ body {
     align-items: center;
     justify-content: center;
     opacity: 0.5;
+    margin-left: -8px;
 }
 
 .task-item:hover .nav-btn {
@@ -324,7 +325,7 @@ body {
     align-items: center;
     justify-content: center;
     opacity: 0;
-    margin-left: auto;
+    margin-left: -8px;
 }
 
 .task-item:hover .delete-btn,
