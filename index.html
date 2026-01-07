@@ -45,6 +45,23 @@
             </div>
         </div>
 
+        <!-- Layer 3: Group Detail (Tasks in a Group) -->
+        <div id="view-layer-3" class="view-layer view-hidden">
+            <div class="glass-card">
+                <div class="nav-header">
+                    <button class="back-btn" onclick="switchLayer(2)">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M12 16L6 10L12 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </button>
+                    <h1 class="header" id="group-detail-title">Group Tasks</h1>
+                </div>
+                <div class="task-list" id="group-tasks-list">
+                    <!-- Tasks injected by React -->
+                </div>
+            </div>
+        </div>
+
         <!-- Bottom Menu Trigger -->
         <div class="bottom-menu-trigger" onclick="toggleMenu()"></div>
 
@@ -76,23 +93,35 @@
         // ========== VANILLA JS LAYER CONTROL ==========
         let currentLayer = 1;
         let isMenuOpen = false;
+        let currentGroupId = null; // Track which group is being viewed
 
-        function switchLayer(layerId) {
+        function switchLayer(layerId, groupId = null) {
             currentLayer = layerId;
+
+            if (groupId !== null) {
+                currentGroupId = groupId;
+            }
 
             const layer1 = document.getElementById('view-layer-1');
             const layer2 = document.getElementById('view-layer-2');
+            const layer3 = document.getElementById('view-layer-3');
 
+            // Hide all layers
+            [layer1, layer2, layer3].forEach(layer => {
+                layer.classList.add('view-hidden');
+                layer.classList.remove('view-active');
+            });
+
+            // Show selected layer
             if (layerId === 1) {
                 layer1.classList.add('view-active');
                 layer1.classList.remove('view-hidden');
-                layer2.classList.add('view-hidden');
-                layer2.classList.remove('view-active');
-            } else {
+            } else if (layerId === 2) {
                 layer2.classList.add('view-active');
                 layer2.classList.remove('view-hidden');
-                layer1.classList.add('view-hidden');
-                layer1.classList.remove('view-active');
+            } else if (layerId === 3) {
+                layer3.classList.add('view-active');
+                layer3.classList.remove('view-hidden');
             }
         }
 
@@ -140,6 +169,8 @@
         const saveToStorage = (key, data) => {
             try {
                 localStorage.setItem(key, JSON.stringify(data));
+                // Notify all components that data has changed
+                window.dispatchEvent(new CustomEvent('storage-updated', { detail: { key } }));
             } catch (error) {
                 console.error('Error saving to storage:', error);
             }
@@ -147,13 +178,18 @@
 
         // ========== DATA ==========
         const INITIAL_TASKS = [
-            { id: 1, text: 'Read clean code principles', completed: false },
-            { id: 2, text: 'Review system architecture', completed: false },
-            { id: 3, text: 'Meditate for 15 mins', completed: false }
+            { id: 1, text: 'Read clean code principles', completed: false, groupId: 1, showInToday: true },
+            { id: 2, text: 'Review system architecture', completed: false, groupId: 1, showInToday: false },
+            { id: 3, text: 'Meditate for 15 mins', completed: false, groupId: 2, showInToday: true },
+            { id: 4, text: 'Buy groceries', completed: false, groupId: 3, showInToday: false },
+            { id: 5, text: 'Call dentist', completed: false, groupId: 2, showInToday: false },
+            { id: 6, text: 'Finish project proposal', completed: false, groupId: 1, showInToday: false },
+            { id: 7, text: 'Workout for 30 mins', completed: false, groupId: 2, showInToday: false },
+            { id: 8, text: 'Buy milk', completed: false, groupId: 3, showInToday: false }
         ];
 
         const INITIAL_GROUPS = [
-            { id: 1, name: 'Work', count: 5, color: '#34C759' },
+            { id: 1, name: 'Work', count: 3, color: '#34C759' },
             { id: 2, name: 'Personal', count: 3, color: '#007AFF' },
             { id: 3, name: 'Groceries', count: 2, color: '#FF9500' }
         ];
@@ -185,16 +221,23 @@
         }
 
         // Group Item Component
-        function GroupItem({ group, onDelete }) {
+        function GroupItem({ group, onDelete, onClick }) {
             return (
                 <div className="group-item">
-                    <div className="group-content">
+                    <div
+                        className="group-content"
+                        onClick={() => onClick(group.id, group.name)}
+                        style={{ cursor: 'pointer', flex: 1 }}
+                    >
                         <div className="group-name">{group.name}</div>
                         <div className="group-count">{group.count} {group.count === 1 ? 'task' : 'tasks'}</div>
                     </div>
                     <button
                         className="delete-btn"
-                        onClick={() => onDelete(group.id)}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onDelete(group.id);
+                        }}
                         aria-label={`Delete group: ${group.name}`}
                     >
                         ×
@@ -265,16 +308,58 @@
             );
         }
 
-        // Today View Component
-        function TodayView({ tasks, onToggle, onDelete, onAdd }) {
+        // Group Task Item Component (with star toggle for showInToday)
+        function GroupTaskItem({ task, onToggle, onDelete, onToggleToday }) {
+            return (
+                <div className={`task-item ${task.completed ? 'completed' : ''}`}>
+                    <div
+                        className={`checkbox ${task.completed ? 'checked' : ''}`}
+                        onClick={() => onToggle(task.id)}
+                        role="checkbox"
+                        aria-checked={task.completed}
+                        tabIndex={0}
+                        onKeyPress={(e) => e.key === 'Enter' && onToggle(task.id)}
+                    />
+                    <div className="task-text">{task.text}</div>
+                    <button
+                        className="star-btn"
+                        onClick={() => onToggleToday(task.id)}
+                        aria-label={task.showInToday ? "Remove from Today" : "Add to Today"}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            fontSize: '20px',
+                            cursor: 'pointer',
+                            padding: '5px',
+                            marginRight: '5px'
+                        }}
+                    >
+                        {task.showInToday ? '⭐' : '☆'}
+                    </button>
+                    <button
+                        className="delete-btn"
+                        onClick={() => onDelete(task.id)}
+                        aria-label={`Delete task: ${task.text}`}
+                    >
+                        ×
+                    </button>
+                </div>
+            );
+        }
+
+        // Group Detail View Component
+        function GroupDetailView({ tasks, groupId, onToggle, onDelete, onAdd, onToggleToday }) {
+            const groupTasks = tasks.filter(task => task.groupId === groupId);
+
             return (
                 <>
-                    {tasks.map(task => (
-                        <TaskItem
+                    {groupTasks.map(task => (
+                        <GroupTaskItem
                             key={task.id}
                             task={task}
                             onToggle={onToggle}
                             onDelete={onDelete}
+                            onToggleToday={onToggleToday}
                         />
                     ))}
                     <AddTaskForm onAdd={onAdd} />
@@ -282,8 +367,38 @@
             );
         }
 
+        // Today View Component
+        function TodayView({ tasks, onToggle, onDelete }) {
+            // Only show tasks marked for today
+            const todayTasks = tasks.filter(task => task.showInToday);
+
+            if (todayTasks.length === 0) {
+                return (
+                    <div style={{ textAlign: 'center', padding: '40px 20px', color: '#8E8E93' }}>
+                        <p>No tasks for today</p>
+                        <p style={{ fontSize: '14px', marginTop: '10px' }}>
+                            Go to My Lists and select tasks to add them here
+                        </p>
+                    </div>
+                );
+            }
+
+            return (
+                <>
+                    {todayTasks.map(task => (
+                        <TaskItem
+                            key={task.id}
+                            task={task}
+                            onToggle={onToggle}
+                            onDelete={onDelete}
+                        />
+                    ))}
+                </>
+            );
+        }
+
         // Lists View Component
-        function ListsView({ groups, onDelete, onAdd }) {
+        function ListsView({ groups, onDelete, onAdd, onGroupClick }) {
             return (
                 <>
                     {groups.map(group => (
@@ -291,6 +406,7 @@
                             key={group.id}
                             group={group}
                             onDelete={onDelete}
+                            onClick={onGroupClick}
                         />
                     ))}
                     <AddGroupForm onAdd={onAdd} />
@@ -304,6 +420,17 @@
                 loadFromStorage(STORAGE_KEYS.TASKS, INITIAL_TASKS)
             );
 
+            // Listen for storage updates from other components
+            useEffect(() => {
+                const handleStorageUpdate = (event) => {
+                    if (event.detail.key === STORAGE_KEYS.TASKS) {
+                        setTasks(loadFromStorage(STORAGE_KEYS.TASKS, INITIAL_TASKS));
+                    }
+                };
+                window.addEventListener('storage-updated', handleStorageUpdate);
+                return () => window.removeEventListener('storage-updated', handleStorageUpdate);
+            }, []);
+
             useEffect(() => {
                 saveToStorage(STORAGE_KEYS.TASKS, tasks);
             }, [tasks]);
@@ -313,16 +440,6 @@
                     task.id === id ? { ...task, completed: !task.completed } : task
                 ));
                 console.log('[Task] Toggled task:', id);
-            };
-
-            const addTask = (text) => {
-                const newTask = {
-                    id: generateUniqueId(),
-                    text: text,
-                    completed: false
-                };
-                setTasks([...tasks, newTask]);
-                console.log('[Task] Added new task:', newTask);
             };
 
             const deleteTask = (id) => {
@@ -335,7 +452,6 @@
                     tasks={tasks}
                     onToggle={toggleTask}
                     onDelete={deleteTask}
-                    onAdd={addTask}
                 />
             );
         }
@@ -345,6 +461,28 @@
             const [groups, setGroups] = useState(() =>
                 loadFromStorage(STORAGE_KEYS.GROUPS, INITIAL_GROUPS)
             );
+            const [tasks, setTasks] = useState(() =>
+                loadFromStorage(STORAGE_KEYS.TASKS, INITIAL_TASKS)
+            );
+
+            // Listen for storage updates
+            useEffect(() => {
+                const handleStorageUpdate = (event) => {
+                    if (event.detail.key === STORAGE_KEYS.TASKS) {
+                        setTasks(loadFromStorage(STORAGE_KEYS.TASKS, INITIAL_TASKS));
+                    } else if (event.detail.key === STORAGE_KEYS.GROUPS) {
+                        setGroups(loadFromStorage(STORAGE_KEYS.GROUPS, INITIAL_GROUPS));
+                    }
+                };
+                window.addEventListener('storage-updated', handleStorageUpdate);
+                return () => window.removeEventListener('storage-updated', handleStorageUpdate);
+            }, []);
+
+            // Update group counts based on tasks
+            const groupsWithCounts = groups.map(group => ({
+                ...group,
+                count: tasks.filter(task => task.groupId === group.id).length
+            }));
 
             useEffect(() => {
                 saveToStorage(STORAGE_KEYS.GROUPS, groups);
@@ -366,11 +504,106 @@
                 console.log('[Group] Deleted group:', id);
             };
 
+            const handleGroupClick = (groupId, groupName) => {
+                console.log('[Group] Clicked group:', groupId, groupName);
+                // Update the group detail title
+                const titleElement = document.getElementById('group-detail-title');
+                if (titleElement) {
+                    titleElement.textContent = groupName;
+                }
+                // Switch to layer 3 and set current group
+                switchLayer(3, groupId);
+                // Trigger React re-render of group detail view
+                window.dispatchEvent(new CustomEvent('group-selected', { detail: { groupId, groupName } }));
+            };
+
             return (
                 <ListsView
-                    groups={groups}
+                    groups={groupsWithCounts}
                     onDelete={deleteGroup}
                     onAdd={addGroup}
+                    onGroupClick={handleGroupClick}
+                />
+            );
+        }
+
+        // Group Detail Container Component
+        function GroupDetailContainer() {
+            const [tasks, setTasks] = useState(() =>
+                loadFromStorage(STORAGE_KEYS.TASKS, INITIAL_TASKS)
+            );
+            const [currentGroup, setCurrentGroup] = useState(null);
+
+            // Listen for storage updates from other components
+            useEffect(() => {
+                const handleStorageUpdate = (event) => {
+                    if (event.detail.key === STORAGE_KEYS.TASKS) {
+                        setTasks(loadFromStorage(STORAGE_KEYS.TASKS, INITIAL_TASKS));
+                    }
+                };
+                window.addEventListener('storage-updated', handleStorageUpdate);
+                return () => window.removeEventListener('storage-updated', handleStorageUpdate);
+            }, []);
+
+            useEffect(() => {
+                saveToStorage(STORAGE_KEYS.TASKS, tasks);
+            }, [tasks]);
+
+            // Listen for group selection event
+            useEffect(() => {
+                const handleGroupSelected = (event) => {
+                    setCurrentGroup(event.detail.groupId);
+                };
+                window.addEventListener('group-selected', handleGroupSelected);
+                return () => window.removeEventListener('group-selected', handleGroupSelected);
+            }, []);
+
+            const toggleTask = (id) => {
+                setTasks(tasks.map(task =>
+                    task.id === id ? { ...task, completed: !task.completed } : task
+                ));
+                console.log('[Task] Toggled task:', id);
+            };
+
+            const toggleTodayStatus = (id) => {
+                setTasks(tasks.map(task =>
+                    task.id === id ? { ...task, showInToday: !task.showInToday } : task
+                ));
+                console.log('[Task] Toggled showInToday for task:', id);
+            };
+
+            const addTask = (text) => {
+                if (!currentGroup) return;
+                const newTask = {
+                    id: generateUniqueId(),
+                    text: text,
+                    completed: false,
+                    groupId: currentGroup,
+                    showInToday: false
+                };
+                setTasks([...tasks, newTask]);
+                console.log('[Task] Added new task to group:', newTask);
+            };
+
+            const deleteTask = (id) => {
+                setTasks(tasks.filter(task => task.id !== id));
+                console.log('[Task] Deleted task:', id);
+            };
+
+            if (!currentGroup) {
+                return <div style={{ textAlign: 'center', padding: '40px 20px', color: '#8E8E93' }}>
+                    Select a group to view tasks
+                </div>;
+            }
+
+            return (
+                <GroupDetailView
+                    tasks={tasks}
+                    groupId={currentGroup}
+                    onToggle={toggleTask}
+                    onDelete={deleteTask}
+                    onAdd={addTask}
+                    onToggleToday={toggleTodayStatus}
                 />
             );
         }
@@ -410,6 +643,17 @@
                     console.log('[App Init] GroupsContainer rendered ✓');
                 } else {
                     console.error('[App Error] groups-list container not found!');
+                }
+
+                // Render Group Detail view
+                const groupDetailContainer = document.getElementById('group-tasks-list');
+                if (groupDetailContainer) {
+                    console.log('[App Init] Rendering GroupDetailContainer...');
+                    const groupDetailRoot = ReactDOM.createRoot(groupDetailContainer);
+                    groupDetailRoot.render(<GroupDetailContainer />);
+                    console.log('[App Init] GroupDetailContainer rendered ✓');
+                } else {
+                    console.error('[App Error] group-tasks-list container not found!');
                 }
 
                 console.log('[App Init] ✅ Application initialized successfully!');
