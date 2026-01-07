@@ -198,6 +198,39 @@ body {
     flex: 1;
 }
 
+/* Editable Task Text - Click to edit hint */
+.task-editable {
+    cursor: text;
+    padding: 4px 8px;
+    margin: -4px -8px;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.task-editable:hover {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+/* Task Edit Input */
+.task-edit-input {
+    flex: 1;
+    font-size: 16px;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-color);
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid var(--accent-color);
+    border-radius: 6px;
+    padding: 4px 8px;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.task-edit-input:focus {
+    background: white;
+    box-shadow: 0 0 0 3px rgba(52, 199, 89, 0.1);
+}
+
 /* Delete Button */
 .delete-btn {
     width: 28px;
