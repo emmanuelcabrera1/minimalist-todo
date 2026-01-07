@@ -538,70 +538,42 @@ body {
     }
 }
 
-/* Context Menu */
-.context-menu-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.2);
-    z-index: 999;
-}
-
-.context-menu {
-    position: fixed;
-    min-width: 150px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-    z-index: 1000;
-    overflow: hidden;
-    animation: contextMenuFadeIn 0.15s ease-out;
-}
-
-@keyframes contextMenuFadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-.context-menu-item {
+/* Move Buttons (shown on task click) */
+.move-btn {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(0, 122, 255, 0.1);
+    color: #007AFF;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
     display: flex;
     align-items: center;
-    gap: 10px;
-    width: 100%;
-    padding: 14px 16px;
-    border: none;
-    background: transparent;
-    font-family: 'Inter', sans-serif;
-    font-size: 15px;
-    color: var(--text-color);
-    cursor: pointer;
-    transition: background 0.15s;
-    text-align: left;
+    justify-content: center;
 }
 
-.context-menu-item:hover {
-    background: rgba(0, 0, 0, 0.05);
+.move-btn:hover {
+    background: #007AFF;
+    color: white;
+    transform: scale(1.1);
 }
 
-.context-menu-item:active {
-    background: rgba(0, 0, 0, 0.1);
+.move-btn:active {
+    transform: scale(0.95);
 }
 
-.context-menu-item:not(:last-child) {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+.move-up {
+    margin-right: 4px;
 }
 
-.context-menu-item.cancel {
-    color: #FF3B30;
+/* Highlight task when arrows are showing */
+.task-item.show-arrows {
+    background: rgba(0, 122, 255, 0.05);
+    border-radius: 12px;
+    margin: -8px;
+    padding: 28px 8px;
 }

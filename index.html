@@ -438,14 +438,11 @@
             );
         }
 
-        // Group Task Item Component (with star toggle for showInToday, infinite nesting, and context menu)
+        // Group Task Item Component (with star toggle for showInToday, infinite nesting, and move arrows)
         function GroupTaskItem({ task, onToggle, onDelete, onToggleToday, onEdit, onNavigate, onMoveTask, hasChildren }) {
             const [isEditing, setIsEditing] = useState(false);
             const [editText, setEditText] = useState(task.text);
-            const [showMenu, setShowMenu] = useState(false);
-            const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
-            const longPressTimer = React.useRef(null);
-            const isLongPress = React.useRef(false);
+            const [showArrows, setShowArrows] = useState(false);
 
             const handleSave = () => {
                 const trimmed = editText.trim();
@@ -469,143 +466,107 @@
                 }
             };
 
-            // Long-press detection
-            const handlePressStart = (e) => {
-                isLongPress.current = false;
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
-                longPressTimer.current = setTimeout(() => {
-                    isLongPress.current = true;
-                    setMenuPosition({ x: clientX, y: clientY });
-                    setShowMenu(true);
-                    // Haptic feedback if available
-                    if (navigator.vibrate) navigator.vibrate(50);
-                }, 500);
+            // Click on task text toggles arrow buttons
+            const handleTextClick = () => {
+                setShowArrows(!showArrows);
             };
 
-            const handlePressEnd = (e) => {
-                clearTimeout(longPressTimer.current);
-                if (!isLongPress.current && !showMenu) {
-                    // Short tap - trigger edit
-                    setIsEditing(true);
-                }
+            // Double-click to edit
+            const handleDoubleClick = () => {
+                setShowArrows(false);
+                setIsEditing(true);
             };
 
-            const handlePressMove = () => {
-                // Cancel long-press if user moves (scrolling)
-                clearTimeout(longPressTimer.current);
+            const handleMoveUp = (e) => {
+                e.stopPropagation();
+                onMoveTask(task.id, 'top');
+                setShowArrows(false);
             };
 
-            const handleMenuAction = (action) => {
-                setShowMenu(false);
-                if (action === 'edit') {
-                    setIsEditing(true);
-                } else if (action === 'top' || action === 'bottom') {
-                    onMoveTask(task.id, action);
-                }
+            const handleMoveDown = (e) => {
+                e.stopPropagation();
+                onMoveTask(task.id, 'bottom');
+                setShowArrows(false);
             };
 
             return (
-                <>
-                    <div className={`task-item ${task.completed ? 'completed' : ''}`}>
-                        <div
-                            className={`checkbox ${task.completed ? 'checked' : ''}`}
-                            onClick={() => onToggle(task.id)}
-                            role="checkbox"
-                            aria-checked={task.completed}
-                            tabIndex={0}
-                            onKeyPress={(e) => e.key === 'Enter' && onToggle(task.id)}
+                <div className={`task-item ${task.completed ? 'completed' : ''} ${showArrows ? 'show-arrows' : ''}`}>
+                    <div
+                        className={`checkbox ${task.completed ? 'checked' : ''}`}
+                        onClick={() => onToggle(task.id)}
+                        role="checkbox"
+                        aria-checked={task.completed}
+                        tabIndex={0}
+                        onKeyPress={(e) => e.key === 'Enter' && onToggle(task.id)}
+                    />
+                    {isEditing ? (
+                        <input
+                            type="text"
+                            className="task-edit-input"
+                            value={editText}
+                            onChange={(e) => setEditText(e.target.value)}
+                            onBlur={handleSave}
+                            onKeyDown={handleKeyDown}
+                            autoFocus
+                            maxLength={500}
                         />
-                        {isEditing ? (
-                            <input
-                                type="text"
-                                className="task-edit-input"
-                                value={editText}
-                                onChange={(e) => setEditText(e.target.value)}
-                                onBlur={handleSave}
-                                onKeyDown={handleKeyDown}
-                                autoFocus
-                                maxLength={500}
-                            />
-                        ) : (
-                            <div
-                                className="task-text task-editable"
-                                onTouchStart={handlePressStart}
-                                onTouchEnd={handlePressEnd}
-                                onTouchMove={handlePressMove}
-                                onMouseDown={handlePressStart}
-                                onMouseUp={handlePressEnd}
-                                onMouseLeave={() => clearTimeout(longPressTimer.current)}
-                                onContextMenu={(e) => {
-                                    e.preventDefault();
-                                    setMenuPosition({ x: e.clientX, y: e.clientY });
-                                    setShowMenu(true);
-                                }}
-                            >
-                                {task.text}
-                            </div>
-                        )}
-                        <button
-                            className="nav-btn"
-                            onClick={() => onNavigate(task.id, task.text)}
-                            aria-label={`Add subtasks to: ${task.text}`}
+                    ) : (
+                        <div
+                            className="task-text task-editable"
+                            onClick={handleTextClick}
+                            onDoubleClick={handleDoubleClick}
                         >
-                            ›
-                        </button>
-                        <button
-                            className="star-btn"
-                            onClick={() => onToggleToday(task.id)}
-                            aria-label={task.showInToday ? "Remove from Today" : "Add to Today"}
-                            style={{
-                                background: 'none',
-                                border: 'none',
-                                fontSize: '20px',
-                                cursor: 'pointer',
-                                padding: '5px',
-                                marginRight: '5px'
-                            }}
-                        >
-                            {task.showInToday ? '⭐' : '☆'}
-                        </button>
-                        <button
-                            className="delete-btn"
-                            onClick={() => onDelete(task.id)}
-                            aria-label={`Delete task: ${task.text}`}
-                        >
-                            ×
-                        </button>
-                    </div>
-                    {showMenu && (
+                            {task.text}
+                        </div>
+                    )}
+                    {showArrows && (
                         <>
-                            <div
-                                className="context-menu-overlay"
-                                onClick={() => setShowMenu(false)}
-                            />
-                            <div
-                                className="context-menu"
-                                style={{
-                                    position: 'fixed',
-                                    left: Math.min(menuPosition.x, window.innerWidth - 160),
-                                    top: Math.min(menuPosition.y, window.innerHeight - 180)
-                                }}
+                            <button
+                                className="move-btn move-up"
+                                onClick={handleMoveUp}
+                                aria-label="Move to top"
                             >
-                                <button className="context-menu-item" onClick={() => handleMenuAction('edit')}>
-                                    📝 Edit
-                                </button>
-                                <button className="context-menu-item" onClick={() => handleMenuAction('top')}>
-                                    ⬆️ Move to Top
-                                </button>
-                                <button className="context-menu-item" onClick={() => handleMenuAction('bottom')}>
-                                    ⬇️ Move to End
-                                </button>
-                                <button className="context-menu-item cancel" onClick={() => setShowMenu(false)}>
-                                    ✕ Cancel
-                                </button>
-                            </div>
+                                ↑
+                            </button>
+                            <button
+                                className="move-btn move-down"
+                                onClick={handleMoveDown}
+                                aria-label="Move to bottom"
+                            >
+                                ↓
+                            </button>
                         </>
                     )}
-                </>
+                    <button
+                        className="nav-btn"
+                        onClick={() => onNavigate(task.id, task.text)}
+                        aria-label={`Add subtasks to: ${task.text}`}
+                    >
+                        ›
+                    </button>
+                    <button
+                        className="star-btn"
+                        onClick={() => onToggleToday(task.id)}
+                        aria-label={task.showInToday ? "Remove from Today" : "Add to Today"}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            fontSize: '20px',
+                            cursor: 'pointer',
+                            padding: '5px',
+                            marginRight: '5px'
+                        }}
+                    >
+                        {task.showInToday ? '⭐' : '☆'}
+                    </button>
+                    <button
+                        className="delete-btn"
+                        onClick={() => onDelete(task.id)}
+                        aria-label={`Delete task: ${task.text}`}
+                    >
+                        ×
+                    </button>
+                </div>
             );
         }
 
