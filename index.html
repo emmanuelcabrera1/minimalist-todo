@@ -81,6 +81,10 @@
                     <span class="menu-icon">🔄</span>
                     <span class="menu-label">Refresh</span>
                 </button>
+                <button class="menu-item" onclick="resetData();">
+                    <span class="menu-icon">🔁</span>
+                    <span class="menu-label">Reset Data</span>
+                </button>
             </div>
         </div>
     </div>
@@ -161,6 +165,15 @@
             window.location.reload();
         }
 
+        function resetData() {
+            console.log('[App] Resetting data to initial state...');
+            // Clear all localStorage
+            localStorage.removeItem(STORAGE_KEYS.TASKS);
+            localStorage.removeItem(STORAGE_KEYS.GROUPS);
+            // Reload to initialize with INITIAL_TASKS and INITIAL_GROUPS
+            window.location.reload();
+        }
+
         // AUTO-REFRESH: Refresh when user returns to the tab/app
         document.addEventListener('visibilitychange', () => {
             if (!document.hidden) {
@@ -194,7 +207,19 @@
         const loadFromStorage = (key, fallback) => {
             try {
                 const stored = localStorage.getItem(key);
-                return stored ? JSON.parse(stored) : fallback;
+                if (!stored) return fallback;
+
+                const data = JSON.parse(stored);
+
+                // DATA MIGRATION: Add parentId field to old tasks that don't have it
+                if (key === STORAGE_KEYS.TASKS && Array.isArray(data)) {
+                    return data.map(task => ({
+                        ...task,
+                        parentId: task.parentId !== undefined ? task.parentId : null
+                    }));
+                }
+
+                return data;
             } catch (error) {
                 console.error('Error loading from storage:', error);
                 return fallback;
