@@ -36,3 +36,6 @@ minimalist-todo/
 
 ## Live Demo
 Coming soon on GitHub Pages!
+
+## Repository
+[https://github.com/emmanuelcabrera1/minimalist-todo](https://github.com/emmanuelcabrera1/minimalist-todo)
