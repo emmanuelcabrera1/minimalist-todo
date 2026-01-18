@@ -1,0 +1,266 @@
+/* ============================================
+   LIFE COMPASS - Tasks Module Styles
+   ============================================ */
+
+/* Task List */
+.task-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+/* Task Item */
+.task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: var(--bg-surface);
+    border-radius: var(--card-border-radius);
+    transition: all var(--transition-fast);
+}
+
+.task-item:active {
+    background: var(--bg-elevated);
+}
+
+.task-item.completed {
+    opacity: 0.6;
+}
+
+.task-item.completed .task-title {
+    text-decoration: line-through;
+    color: var(--text-tertiary);
+}
+
+/* Task Checkbox */
+.task-checkbox {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--text-tertiary);
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+    cursor: pointer;
+}
+
+.task-checkbox:hover {
+    border-color: var(--accent-tasks);
+}
+
+.task-checkbox.checked {
+    background: var(--accent-tasks);
+    border-color: var(--accent-tasks);
+}
+
+.task-checkbox.checked::after {
+    content: '✓';
+    color: var(--bg-primary);
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Priority colors for checkbox */
+.task-checkbox.priority-1 {
+    border-color: var(--priority-1);
+}
+
+.task-checkbox.priority-2 {
+    border-color: var(--priority-2);
+}
+
+.task-checkbox.priority-3 {
+    border-color: var(--priority-3);
+}
+
+/* Task Content */
+.task-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.task-title {
+    font-size: var(--font-size-body);
+    font-weight: var(--font-weight-regular);
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.task-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-top: var(--space-xs);
+}
+
+.task-due {
+    font-size: var(--font-size-caption-1);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.task-due.overdue {
+    color: var(--error);
+}
+
+.task-due.today {
+    color: var(--accent-tasks);
+}
+
+.task-project {
+    font-size: var(--font-size-caption-1);
+    color: var(--text-tertiary);
+}
+
+.task-labels {
+    display: flex;
+    gap: var(--space-xs);
+}
+
+.task-label {
+    font-size: var(--font-size-caption-2);
+    padding: 2px 6px;
+    background: var(--bg-elevated);
+    border-radius: 4px;
+    color: var(--text-secondary);
+}
+
+/* Task Link Badge */
+.task-link {
+    font-size: var(--font-size-caption-1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.task-link.experiment {
+    background: rgba(94, 92, 230, 0.2);
+    color: var(--accent-experiments);
+}
+
+.task-link.habit {
+    background: rgba(48, 209, 88, 0.2);
+    color: var(--accent-habits);
+}
+
+/* Swipe Actions */
+.task-item-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.task-swipe-action {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.task-swipe-action.left {
+    left: 0;
+    background: var(--error);
+}
+
+.task-swipe-action.right {
+    right: 0;
+    background: var(--accent-habits);
+}
+
+/* Project Header */
+.project-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) 0;
+    margin-bottom: var(--space-sm);
+}
+
+.project-icon {
+    font-size: 20px;
+}
+
+.project-name {
+    font-size: var(--font-size-subhead);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-secondary);
+}
+
+.project-count {
+    font-size: var(--font-size-caption-1);
+    color: var(--text-tertiary);
+    margin-left: auto;
+}
+
+/* Quick Add */
+.quick-add {
+    position: fixed;
+    bottom: calc(var(--bottom-nav-height) + var(--safe-area-bottom) + var(--space-md));
+    left: var(--screen-margin);
+    right: var(--screen-margin);
+    max-width: 396px;
+    margin: 0 auto;
+    display: flex;
+    gap: var(--space-sm);
+    background: var(--bg-surface);
+    border-radius: var(--card-border-radius);
+    padding: var(--space-sm);
+    box-shadow: var(--shadow-lg);
+    z-index: var(--z-fixed);
+}
+
+.quick-add-input {
+    flex: 1;
+    min-height: 40px;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--bg-elevated);
+    border-radius: var(--input-border-radius);
+    color: var(--text-primary);
+}
+
+.quick-add-btn {
+    width: 40px;
+    height: 40px;
+    background: var(--accent-tasks);
+    border-radius: var(--button-border-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--bg-primary);
+}
+
+/* Date Groups */
+.date-group {
+    margin-bottom: var(--space-lg);
+}
+
+.date-group-header {
+    font-size: var(--font-size-footnote);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: var(--space-sm);
+    padding-left: var(--space-xs);
+}
+
+.date-group-header.today {
+    color: var(--accent-tasks);
+}
+
+.date-group-header.overdue {
+    color: var(--error);
+}

@@ -1,0 +1,295 @@
+/* ============================================
+   LIFE COMPASS - Navigation Styles
+   ============================================
+   Bottom tab bar and navigation components.
+   ============================================ */
+
+/* ========================================
+   BOTTOM TAB BAR
+   ======================================== */
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--bottom-nav-height);
+    padding-bottom: var(--safe-area-bottom);
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border-top: var(--glass-border);
+    z-index: var(--z-fixed);
+    display: flex;
+    justify-content: center;
+}
+
+.bottom-nav-inner {
+    width: 100%;
+    max-width: 428px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: calc(var(--bottom-nav-height) - var(--safe-area-bottom));
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-width: var(--touch-target-min);
+    min-height: var(--touch-target-min);
+    padding: var(--space-xs);
+    color: var(--text-tertiary);
+    transition: all var(--transition-fast);
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+}
+
+.nav-item:active {
+    transform: scale(0.9);
+}
+
+.nav-item-icon {
+    font-size: 24px;
+    line-height: 1;
+    transition: transform var(--transition-spring);
+}
+
+.nav-item-label {
+    font-size: 10px;
+    font-weight: var(--font-weight-medium);
+    letter-spacing: -0.1px;
+}
+
+/* Active State */
+.nav-item.active {
+    color: var(--text-primary);
+}
+
+.nav-item.active .nav-item-icon {
+    transform: scale(1.1);
+}
+
+/* Module-specific active colors */
+.nav-item.active[data-module="tasks"] {
+    color: var(--accent-tasks);
+}
+
+.nav-item.active[data-module="habits"] {
+    color: var(--accent-habits);
+}
+
+.nav-item.active[data-module="experiments"] {
+    color: var(--accent-experiments);
+}
+
+.nav-item.active[data-module="mood"] {
+    color: var(--accent-mood);
+}
+
+.nav-item.active[data-module="life"] {
+    color: var(--accent-life);
+}
+
+/* Badge on nav item */
+.nav-item-badge {
+    position: absolute;
+    top: 4px;
+    right: 50%;
+    transform: translateX(12px);
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    background: var(--error);
+    color: var(--text-primary);
+    font-size: 11px;
+    font-weight: var(--font-weight-bold);
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ========================================
+   TOP HEADER BAR
+   ======================================== */
+
+.top-header {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: var(--space-md);
+    padding-top: calc(var(--safe-area-top) + var(--space-md));
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border-bottom: var(--glass-border);
+    z-index: var(--z-sticky);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+}
+
+.top-header-title {
+    font-size: var(--font-size-title-3);
+    font-weight: var(--font-weight-semibold);
+}
+
+.top-header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+/* ========================================
+   SEGMENTED CONTROL
+   ======================================== */
+
+.segmented-control {
+    display: flex;
+    background: var(--bg-surface);
+    border-radius: var(--button-border-radius);
+    padding: 2px;
+}
+
+.segment {
+    flex: 1;
+    min-height: 32px;
+    padding: var(--space-xs) var(--space-md);
+    border-radius: 6px;
+    font-size: var(--font-size-subhead);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-secondary);
+    transition: all var(--transition-fast);
+    text-align: center;
+}
+
+.segment.active {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+}
+
+/* ========================================
+   FILTER CHIPS
+   ======================================== */
+
+.filter-chips {
+    display: flex;
+    gap: var(--space-sm);
+    overflow-x: auto;
+    padding: var(--space-sm) 0;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.filter-chips::-webkit-scrollbar {
+    display: none;
+}
+
+.filter-chip {
+    flex-shrink: 0;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--bg-surface);
+    border-radius: 999px;
+    font-size: var(--font-size-subhead);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-secondary);
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+}
+
+.filter-chip:active {
+    transform: scale(0.95);
+}
+
+.filter-chip.active {
+    background: var(--text-primary);
+    color: var(--bg-primary);
+}
+
+/* Category-specific chip colors when active */
+.filter-chip.active[data-category="health"] {
+    background: #34C759;
+    color: #000;
+}
+
+.filter-chip.active[data-category="work"] {
+    background: #FF9500;
+    color: #000;
+}
+
+.filter-chip.active[data-category="relationships"] {
+    background: #FF2D55;
+    color: #fff;
+}
+
+.filter-chip.active[data-category="parenting"] {
+    background: #AF52DE;
+    color: #fff;
+}
+
+.filter-chip.active[data-category="creativity"] {
+    background: #5AC8FA;
+    color: #000;
+}
+
+.filter-chip.active[data-category="other"] {
+    background: #8E8E93;
+    color: #fff;
+}
+
+/* ========================================
+   BREADCRUMB
+   ======================================== */
+
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: var(--font-size-subhead);
+    color: var(--text-secondary);
+}
+
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.breadcrumb-item::after {
+    content: '›';
+    color: var(--text-tertiary);
+}
+
+.breadcrumb-item:last-child::after {
+    display: none;
+}
+
+.breadcrumb-item:last-child {
+    color: var(--text-primary);
+    font-weight: var(--font-weight-medium);
+}
+
+/* ========================================
+   BACK BUTTON
+   ======================================== */
+
+.back-button {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    color: var(--accent-experiments);
+    font-size: var(--font-size-body);
+    font-weight: var(--font-weight-regular);
+    padding: var(--space-xs);
+    margin-left: calc(-1 * var(--space-xs));
+}
+
+.back-button-icon {
+    font-size: 20px;
+}

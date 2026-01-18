@@ -1,0 +1,45 @@
+/* 
+  Design Tokens (Level 1)
+  Source of Truth for the Design System.
+  Do not hardcode values in component CSS.
+*/
+
+:root {
+    /* Colors */
+    --bg-color: #050505;
+    --surface-color: #1a1a1a;
+    --text-primary: #e0e0e0;
+    --text-secondary: #aaaaaa;
+
+    /* Brand/Accent - Default Gold, override in specific apps if needed */
+    --accent-color: #d4af37;
+    --accent-glow: rgba(212, 175, 55, 0.4);
+
+    /* Semantic Colors */
+    --border-color: #333333;
+    --success-color: #4caf50;
+    --error-color: #f44336;
+
+    /* Typography */
+    --font-main: 'Inter', sans-serif;
+    --font-display: 'Playfair Display', serif;
+
+    /* Spacing (8px Grid System) */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+    --space-2xl: 48px;
+    --space-3xl: 64px;
+
+    /* Animation */
+    --ease-standard: cubic-bezier(0.4, 0.0, 0.2, 1);
+    --duration-short: 200ms;
+    --duration-medium: 400ms;
+
+    /* Border Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 16px;
+}

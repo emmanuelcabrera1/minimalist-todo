@@ -1,41 +1,32 @@
-# Minimalist Todo App
+# HTML Apps Workspace
 
-A focused, minimal todo application with a premium glassmorphism design.
+## Intent
+This workspace is dedicated to the development and management of **HTML applications, webpages, and experiments**. It follows a Zero-Entropy philosophy to ensure organization and scalability.
 
-## Features
-- 🎨 Soft glassmorphism UI (Option 2 design)
-- 📱 Multi-layer architecture (Today view + Lists view)
-- ✅ Interactive task management
-- 🎯 Extreme focus mode showing only 3 priority tasks
-- 🌊 Smooth animations and transitions
-- 🔄 Bottom sheet navigation menu
+## Structure Overview
+The workspace is organized into semantic directories:
 
-## Design Philosophy
-This app follows the "Ethereal Structure" design philosophy, combining:
-- **Visual Theme:** Soft Glassmorphism with frosted glass effects
-- **Structure:** SyncTasks/Apple Reminders inspired layout
-- **Focus:** Displays only 3 key tasks in "Today" view for extreme productivity
+- **`projects/`**: proper web applications (e.g., `well-structured-todo`).
+- **`documentation/`**: Meta-prompts, guides, and agent rules.
+- **`templates/`**: Standardized starting points for new projects.
+- **`_orphans/`**: Holding area for files pending review or deletion.
+- **`config/`**: Shared design tokens and configuration.
+- **`scripts/`**: Automation and utility scripts.
+- **`tests/`**: Global tests and verification protocols.
+- **`docs/`**: AI context files.
 
-## Tech Stack
-- React 18 (CDN)
-- Vanilla CSS with Glassmorphism effects
-- Backdrop-filter blur effects
-- No build tools required - runs directly in the browser
+## Active Projects
+- **[Experiments Web (Gold Standard)](projects/experiments-web/README.md)**: The reference implementation for PWA structure and documentation.
+- **[Minimalist Todo](projects/minimalist-todo/README.md)**: A glassmorphism-styled todo application.
+- **[InfographicAi](https://github.com/emmanuelcabrera1/InfographicAi)**: AI-powered infographic generation.
+- **[Memento Mori](https://github.com/emmanuelcabrera1/memento-mori)**: Life visualization app.
 
-## Local Development
-Simply open `index.html` in your browser. No installation or build process needed.
+## Getting Started
+To create a new project, use the **`templates/standard-pwa-template/`** and follow the **[Project Standards](documentation/PROJECT_STANDARDS.md)**.
 
-## Project Structure
-```
-minimalist-todo/
-├── index.html    # Main HTML with React CDN
-├── style.css     # Glassmorphism styles
-├── app.js        # React components and state management
-└── README.md     # This file
-```
-
-## Live Demo
-Coming soon on GitHub Pages!
-
-## Repository
-[https://github.com/emmanuelcabrera1/minimalist-todo](https://github.com/emmanuelcabrera1/minimalist-todo)
+## Key Documents
+- **[GitHub Doc Manager](documentation/GITHUB_DOC_MANAGER.md)**: Protocols for managing documentation securely.
+- **[Agent Rules](documentation/AGENT_RULES.md)**: Security constitution for AI agents.
+- **[High-Stakes SOP](documentation/protocols/HIGH_STAKES_SOP.md)**: Protocol for critical code changes.
+- **[Security Protocol](documentation/protocols/SECURITY_PROTOCOL.md)**: Security guidelines.
+- **[UX/UI Audit](documentation/audits/UXUI_AUDIT.md)**: Latest audit report.

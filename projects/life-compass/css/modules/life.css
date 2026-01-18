@@ -1,0 +1,326 @@
+/* ============================================
+   LIFE COMPASS - Life Grid Module Styles
+   ============================================ */
+
+/* Life Stats */
+.life-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+}
+
+.life-stat {
+    text-align: center;
+    padding: var(--space-md) var(--space-sm);
+    background: var(--bg-surface);
+    border-radius: var(--card-border-radius);
+}
+
+.life-stat-value {
+    font-size: var(--font-size-title-2);
+    font-weight: var(--font-weight-bold);
+    color: var(--accent-life);
+}
+
+.life-stat-label {
+    font-size: var(--font-size-caption-2);
+    color: var(--text-secondary);
+    margin-top: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+/* Life Grid Container */
+.life-grid-container {
+    background: var(--bg-surface);
+    border-radius: var(--card-border-radius);
+    padding: var(--space-md);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Life Grid */
+.life-grid {
+    display: grid;
+    grid-template-columns: 30px repeat(52, 1fr);
+    gap: 2px;
+    min-width: 600px;
+}
+
+/* Year labels */
+.life-grid-year {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: var(--space-xs);
+    font-size: 9px;
+    color: var(--text-tertiary);
+}
+
+/* Week cells */
+.life-week {
+    aspect-ratio: 1;
+    border-radius: 2px;
+    transition: all var(--transition-fast);
+    cursor: pointer;
+    position: relative;
+}
+
+.life-week.lived {
+    background: var(--life-lived);
+}
+
+.life-week.current {
+    background: var(--life-current);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.life-week.healthy-future {
+    background: var(--life-healthy);
+}
+
+.life-week.later-future {
+    background: var(--life-later);
+}
+
+.life-week.empty {
+    background: var(--bg-elevated);
+}
+
+.life-week:hover {
+    transform: scale(1.5);
+    z-index: 10;
+    box-shadow: 0 0 8px rgba(100, 210, 255, 0.5);
+}
+
+/* Week with event */
+.life-week.has-event {
+    position: relative;
+}
+
+.life-week.has-event::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 6px;
+    height: 6px;
+    background: var(--accent-life);
+    border-radius: 50%;
+}
+
+/* Life Grid Legend */
+.life-grid-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+    font-size: var(--font-size-caption-1);
+    color: var(--text-secondary);
+}
+
+.life-grid-legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.life-grid-legend-swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+.life-grid-legend-swatch.lived {
+    background: var(--life-lived);
+}
+
+.life-grid-legend-swatch.current {
+    background: var(--life-current);
+}
+
+.life-grid-legend-swatch.healthy {
+    background: var(--life-healthy);
+}
+
+.life-grid-legend-swatch.later {
+    background: var(--life-later);
+}
+
+.life-grid-legend-swatch.event {
+    background: var(--accent-life);
+}
+
+/* Week Detail Modal */
+.week-detail {
+    padding: var(--space-md);
+}
+
+.week-detail-header {
+    text-align: center;
+    margin-bottom: var(--space-lg);
+}
+
+.week-detail-title {
+    font-size: var(--font-size-title-2);
+    font-weight: var(--font-weight-bold);
+}
+
+.week-detail-dates {
+    font-size: var(--font-size-subhead);
+    color: var(--text-secondary);
+    margin-top: var(--space-xs);
+}
+
+.week-detail-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+}
+
+.week-detail-stat {
+    background: var(--bg-elevated);
+    border-radius: var(--button-border-radius);
+    padding: var(--space-md);
+    text-align: center;
+}
+
+.week-detail-stat-value {
+    font-size: var(--font-size-title-3);
+    font-weight: var(--font-weight-bold);
+}
+
+.week-detail-stat-label {
+    font-size: var(--font-size-caption-1);
+    color: var(--text-secondary);
+}
+
+/* Life Events List */
+.life-events {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.life-event {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: var(--bg-surface);
+    border-radius: var(--card-border-radius);
+}
+
+.life-event-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.life-event-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.life-event-title {
+    font-size: var(--font-size-body);
+    font-weight: var(--font-weight-medium);
+}
+
+.life-event-date {
+    font-size: var(--font-size-subhead);
+    color: var(--text-secondary);
+}
+
+/* Special Counters */
+.special-counters {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+}
+
+.special-counter {
+    background: var(--bg-surface);
+    border-radius: var(--card-border-radius);
+    padding: var(--space-md);
+    text-align: center;
+}
+
+.special-counter-value {
+    font-size: var(--font-size-title-1);
+    font-weight: var(--font-weight-bold);
+    color: var(--accent-life);
+}
+
+.special-counter-label {
+    font-size: var(--font-size-caption-1);
+    color: var(--text-secondary);
+    margin-top: var(--space-xs);
+}
+
+/* Life Phase */
+.life-phase {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: var(--bg-surface);
+    border-radius: var(--card-border-radius);
+    margin-bottom: var(--space-sm);
+}
+
+.life-phase-color {
+    width: 6px;
+    height: 40px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.life-phase-content {
+    flex: 1;
+}
+
+.life-phase-title {
+    font-size: var(--font-size-body);
+    font-weight: var(--font-weight-medium);
+}
+
+.life-phase-dates {
+    font-size: var(--font-size-subhead);
+    color: var(--text-secondary);
+}
+
+/* Focus Years Indicator */
+.focus-years {
+    background: linear-gradient(135deg, var(--bg-surface) 0%, rgba(100, 210, 255, 0.1) 100%);
+    border-radius: var(--card-border-radius);
+    padding: var(--space-lg);
+    text-align: center;
+    margin-bottom: var(--space-lg);
+}
+
+.focus-years-value {
+    font-size: 48px;
+    font-weight: var(--font-weight-bold);
+    color: var(--accent-life);
+}
+
+.focus-years-label {
+    font-size: var(--font-size-body);
+    color: var(--text-secondary);
+    margin-top: var(--space-sm);
+}
+
+.focus-years-sublabel {
+    font-size: var(--font-size-caption-1);
+    color: var(--text-tertiary);
+    margin-top: var(--space-xs);
+}

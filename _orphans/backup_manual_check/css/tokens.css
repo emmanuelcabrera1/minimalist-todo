@@ -1,0 +1,99 @@
+/* 
+  Experiments - Design Tokens
+  Monochrome Concept Design System
+*/
+
+:root {
+  /* Colors - Monochrome */
+  --bg-color: #FAFAFA;
+  --surface-color: #FFFFFF;
+  --text-primary: #000000;
+  --text-secondary: #666666;
+  /* WCAG AA: 5.74:1 contrast on white */
+  --text-tertiary: #767676;
+  /* WCAG AA: 4.54:1 contrast on white */
+
+  /* Interactive */
+  --active-bg: #000000;
+  --active-text: #FFFFFF;
+  --inactive-bg: #F2F2F7;
+  --inactive-text: #000000;
+
+  /* Semantic */
+  --success-color: #34C759;
+  --error-color: #FF3B30;
+  --border-color: #E5E5EA;
+
+  /* Typography */
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+
+  /* Font Sizes */
+  --text-xs: 11px;
+  --text-sm: 13px;
+  --text-base: 15px;
+  --text-lg: 17px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --text-3xl: 34px;
+  --text-4xl: 48px;
+
+  /* Font Weights */
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-heavy: 800;
+
+  /* Spacing (8px Grid) */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  /* Safe Areas */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  /* Tab Bar Height */
+  --tab-bar-height: 80px;
+}
+
+[data-theme='dark'] {
+  /* Colors - Monochrome Dark (True OLED Black) */
+  --bg-color: #000000;
+  --surface-color: #000000;
+  /* Pure Black for OLED */
+  --text-primary: #FFFFFF;
+  --text-secondary: #EBEBF599;
+  /* 60% white */
+  --text-tertiary: #EBEBF54D;
+  /* 30% white */
+
+  /* Interactive */
+  --active-bg: #FFFFFF;
+  --active-text: #000000;
+  --inactive-bg: #1C1C1E;
+  /* Dark Gray for inactive elements */
+  --inactive-text: #FFFFFF;
+
+  /* Semantic */
+  --border-color: #333333;
+  /* High precision border for separation */
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+}

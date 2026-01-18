@@ -1,0 +1,366 @@
+/* ============================================
+   LIFE COMPASS - Mood Module Styles
+   ============================================ */
+
+/* Mood Grid (Circumplex) */
+.mood-grid {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    max-width: 300px;
+    margin: 0 auto;
+    background: var(--bg-surface);
+    border-radius: var(--card-border-radius);
+    touch-action: none;
+}
+
+.mood-grid-inner {
+    position: absolute;
+    inset: var(--space-md);
+    border-radius: var(--card-border-radius);
+    overflow: hidden;
+}
+
+/* Quadrant backgrounds */
+.mood-quadrant {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+}
+
+.mood-quadrant.high-unpleasant {
+    top: 0;
+    left: 0;
+    background: linear-gradient(135deg, rgba(255, 69, 58, 0.2), transparent);
+}
+
+.mood-quadrant.high-pleasant {
+    top: 0;
+    right: 0;
+    background: linear-gradient(225deg, rgba(255, 214, 10, 0.2), transparent);
+}
+
+.mood-quadrant.low-unpleasant {
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(45deg, rgba(142, 142, 147, 0.2), transparent);
+}
+
+.mood-quadrant.low-pleasant {
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(315deg, rgba(48, 209, 88, 0.2), transparent);
+}
+
+/* Axis labels */
+.mood-axis-label {
+    position: absolute;
+    font-size: var(--font-size-caption-1);
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.mood-axis-label.top {
+    top: var(--space-xs);
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.mood-axis-label.bottom {
+    bottom: var(--space-xs);
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.mood-axis-label.left {
+    left: var(--space-xs);
+    top: 50%;
+    transform: translateY(-50%) rotate(-90deg);
+}
+
+.mood-axis-label.right {
+    right: var(--space-xs);
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+}
+
+/* Mood selection dot */
+.mood-dot {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    background: var(--accent-mood);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 4px rgba(255, 55, 95, 0.3);
+    pointer-events: none;
+    transition: all var(--transition-fast);
+}
+
+.mood-dot.dragging {
+    transform: translate(-50%, -50%) scale(1.2);
+    box-shadow: 0 0 0 8px rgba(255, 55, 95, 0.2);
+}
+
+/* Quadrant emojis */
+.mood-emoji {
+    position: absolute;
+    font-size: 24px;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.mood-emoji.anxious {
+    top: 25%;
+    left: 25%;
+    transform: translate(-50%, -50%);
+}
+
+.mood-emoji.excited {
+    top: 25%;
+    right: 25%;
+    transform: translate(50%, -50%);
+}
+
+.mood-emoji.sad {
+    bottom: 25%;
+    left: 25%;
+    transform: translate(-50%, 50%);
+}
+
+.mood-emoji.calm {
+    bottom: 25%;
+    right: 25%;
+    transform: translate(50%, 50%);
+}
+
+/* Emotion Picker */
+.emotion-picker {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-sm);
+    margin: var(--space-lg) 0;
+}
+
+.emotion-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-md);
+    background: var(--bg-surface);
+    border-radius: var(--card-border-radius);
+    transition: all var(--transition-fast);
+    cursor: pointer;
+}
+
+.emotion-option:hover {
+    background: var(--bg-elevated);
+}
+
+.emotion-option.selected {
+    background: var(--accent-mood);
+    color: var(--bg-primary);
+}
+
+.emotion-option-emoji {
+    font-size: 32px;
+    margin-bottom: var(--space-xs);
+}
+
+.emotion-option-label {
+    font-size: var(--font-size-caption-1);
+    font-weight: var(--font-weight-medium);
+}
+
+/* Activity Tags */
+.activity-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+}
+
+.activity-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-sm) var(--space-md);
+    background: var(--bg-surface);
+    border-radius: 999px;
+    font-size: var(--font-size-subhead);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.activity-tag:hover {
+    background: var(--bg-elevated);
+}
+
+.activity-tag.selected {
+    background: var(--accent-mood);
+    color: var(--bg-primary);
+}
+
+.activity-tag-emoji {
+    font-size: 16px;
+}
+
+/* Mood Entry Card */
+.mood-entry-card {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: var(--bg-surface);
+    border-radius: var(--card-border-radius);
+    margin-bottom: var(--space-sm);
+}
+
+.mood-entry-indicator {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 20px;
+}
+
+.mood-entry-indicator.positive {
+    background: rgba(48, 209, 88, 0.2);
+}
+
+.mood-entry-indicator.negative {
+    background: rgba(255, 69, 58, 0.2);
+}
+
+.mood-entry-indicator.neutral {
+    background: rgba(142, 142, 147, 0.2);
+}
+
+.mood-entry-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.mood-entry-emotion {
+    font-size: var(--font-size-headline);
+    font-weight: var(--font-weight-semibold);
+}
+
+.mood-entry-meta {
+    font-size: var(--font-size-subhead);
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.mood-entry-activities {
+    display: flex;
+    gap: var(--space-xs);
+    margin-top: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+.mood-entry-time {
+    font-size: var(--font-size-caption-1);
+    color: var(--text-tertiary);
+    flex-shrink: 0;
+}
+
+/* Mood Trends Chart */
+.mood-chart-container {
+    background: var(--bg-surface);
+    border-radius: var(--card-border-radius);
+    padding: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.mood-chart {
+    height: 150px;
+    position: relative;
+}
+
+.mood-chart-line {
+    fill: none;
+    stroke: var(--accent-mood);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.mood-chart-area {
+    fill: url(#mood-gradient);
+    opacity: 0.3;
+}
+
+.mood-chart-dot {
+    fill: var(--accent-mood);
+}
+
+.mood-chart-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--space-sm);
+    font-size: var(--font-size-caption-1);
+    color: var(--text-tertiary);
+}
+
+/* Mood Insights */
+.mood-insight-card {
+    background: var(--bg-surface);
+    border-radius: var(--card-border-radius);
+    padding: var(--space-md);
+    margin-bottom: var(--space-md);
+    border-left: 3px solid var(--accent-mood);
+}
+
+.mood-insight-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: var(--font-size-headline);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-sm);
+}
+
+.mood-insight-content {
+    font-size: var(--font-size-body);
+    color: var(--text-secondary);
+}
+
+.mood-correlation {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-sm) 0;
+}
+
+.mood-correlation-bar {
+    flex: 1;
+    height: 8px;
+    background: var(--bg-elevated);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.mood-correlation-fill {
+    height: 100%;
+    border-radius: 4px;
+}
+
+.mood-correlation-fill.positive {
+    background: var(--success);
+}
+
+.mood-correlation-fill.negative {
+    background: var(--error);
+}
+
+.mood-correlation-value {
+    font-size: var(--font-size-subhead);
+    font-weight: var(--font-weight-semibold);
+    min-width: 50px;
+    text-align: right;
+}

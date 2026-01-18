@@ -1,0 +1,268 @@
+:root {
+  --bg-color: #050505;
+  --text-color: #e0e0e0;
+  --accent-color: #d4af37; /* Gold */
+  --accent-glow: rgba(212, 175, 55, 0.4);
+  --grid-bg: #1a1a1a;
+  --grid-lived: #444;
+  --grid-future: #1a1a1a;
+  --border-color: #333;
+  --font-main: 'Inter', sans-serif;
+  --font-display: 'Playfair Display', serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-main);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+  overflow-x: hidden;
+}
+
+.app-container {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Header */
+.app-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+h1 {
+  font-family: var(--font-display);
+  font-size: 4rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #fff 0%, #888 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: #888;
+  max-width: 600px;
+  margin: 0 auto;
+  font-style: italic;
+}
+
+.italic {
+  font-style: italic;
+  font-weight: 400;
+}
+.bold {
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* Controls */
+.controls {
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.input-label {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.date-input {
+  width: 100%;
+  padding: 1rem;
+  background: #111;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: #fff;
+  font-family: var(--font-main);
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.date-input:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 15px var(--accent-glow);
+}
+
+/* Stats */
+.stats-container {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background: #111;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  text-align: center;
+  flex: 1;
+  min-width: 150px;
+}
+
+.stat-value {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+  color: #fff;
+  margin-bottom: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Grid */
+.life-grid-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.life-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8px, 1fr));
+  gap: 3px;
+  width: 100%;
+  max-width: 1000px; /* Consstrain width to keep weeks looking like weeks */
+}
+
+/* Make grid cells responsive but fixed size helps visualization */
+@media (min-width: 600px) {
+  .life-grid {
+    grid-template-columns: repeat(52, 1fr); /* 52 weeks per row */
+    gap: 4px;
+  }
+}
+
+.week {
+  aspect-ratio: 1;
+  background-color: var(--grid-future);
+  border: 1px solid #222;
+  border-radius: 1px;
+  transition: all 0.3s ease;
+}
+
+.week.lived {
+  background-color: var(--grid-lived);
+  border-color: var(--grid-lived);
+}
+
+.week.current {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 8px var(--accent-glow);
+  animation: pulse 2s infinite;
+  z-index: 1;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 5px var(--accent-glow);
+  }
+  50% {
+    transform: scale(1.5);
+    box-shadow: 0 0 15px var(--accent-glow);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 5px var(--accent-glow);
+  }
+}
+
+/* Footer */
+.app-footer {
+  margin-top: 4rem;
+  color: #444;
+  font-size: 0.9rem;
+}
+
+.heart {
+  color: var(--accent-color);
+}
+
+/* Animations */
+.fade-in-down {
+  animation: fadeInDown 1s ease-out forwards;
+  opacity: 0;
+}
+
+.fade-in-up {
+  animation: fadeInUp 1s ease-out forwards;
+  opacity: 0;
+}
+
+.delay-1 {
+  animation-delay: 0.2s;
+}
+.delay-2 {
+  animation-delay: 0.4s;
+}
+.delay-3 {
+  animation-delay: 0.6s;
+}
+.delay-4 {
+  animation-delay: 0.8s;
+}
+.delay-5 {
+  animation-delay: 1s;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -8,3 +8,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Nested Repositories (Isolated)
+projects/experiments-web/

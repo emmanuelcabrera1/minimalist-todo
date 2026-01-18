@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Life Compass">
+    <meta name="theme-color" content="#000000">
+    <meta name="description" content="From tasks to meaning in one unified experience. Track tasks, experiments, habits, mood, and life perspective.">
+    
+    <!-- Security: Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data:;">
+    
+    <title>Life Compass</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Favicon & Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/icon-32.png">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+    
+    <!-- Fonts - Inter (SF Pro approximation) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/navigation.css">
+    <link rel="stylesheet" href="css/modal.css">
+    
+    <!-- Module-specific styles -->
+    <link rel="stylesheet" href="css/modules/tasks.css">
+    <link rel="stylesheet" href="css/modules/habits.css">
+    <link rel="stylesheet" href="css/modules/experiments.css">
+    <link rel="stylesheet" href="css/modules/mood.css">
+    <link rel="stylesheet" href="css/modules/life.css">
+</head>
+
+<body class="no-overscroll">
+    <!-- Skip Link for Accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <!-- App Container -->
+    <div id="app" class="app-container">
+        
+        <!-- Main Content Area -->
+        <main id="main-content" class="screen" role="main" aria-live="polite">
+            <!-- Dynamic content rendered by JavaScript -->
+            <div class="loading-state flex items-center justify-center" style="min-height: 60vh;">
+                <div class="loading-spinner"></div>
+            </div>
+        </main>
+        
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav" role="navigation" aria-label="Main navigation">
+            <div class="bottom-nav-inner">
+                <button class="nav-item active" data-module="tasks" aria-label="Tasks" aria-current="page">
+                    <span class="nav-item-icon">📋</span>
+                    <span class="nav-item-label">Tasks</span>
+                </button>
+                
+                <button class="nav-item" data-module="habits" aria-label="Habits">
+                    <span class="nav-item-icon">✓</span>
+                    <span class="nav-item-label">Habits</span>
+                </button>
+                
+                <button class="nav-item" data-module="experiments" aria-label="Experiments">
+                    <span class="nav-item-icon">🧪</span>
+                    <span class="nav-item-label">Lab</span>
+                </button>
+                
+                <button class="nav-item" data-module="mood" aria-label="Mood">
+                    <span class="nav-item-icon">😊</span>
+                    <span class="nav-item-label">Mood</span>
+                </button>
+                
+                <button class="nav-item" data-module="life" aria-label="Life">
+                    <span class="nav-item-icon">📅</span>
+                    <span class="nav-item-label">Life</span>
+                </button>
+            </div>
+        </nav>
+        
+    </div>
+    
+    <!-- Modal Container -->
+    <div id="modal-root" aria-hidden="true"></div>
+    
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container" role="status" aria-live="polite"></div>
+    
+    <!-- Core Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/db.js"></script>
+    
+    <!-- UI Components -->
+    <script src="js/ui/components.js"></script>
+    <script src="js/ui/modal.js"></script>
+    <script src="js/ui/toast.js"></script>
+    <script src="js/ui/navigation.js"></script>
+    
+    <!-- Data Repositories -->
+    <script src="js/data/settings.js"></script>
+    <script src="js/data/projects.js"></script>
+    <script src="js/data/tasks.js"></script>
+    <script src="js/data/habits.js"></script>
+    <script src="js/data/experiments.js"></script>
+    <script src="js/data/mood.js"></script>
+    <script src="js/data/life.js"></script>
+    
+    <!-- Module Views -->
+    <script src="js/modules/tasks/view.js"></script>
+    <script src="js/modules/tasks/form.js"></script>
+    <script src="js/modules/habits/today.js"></script>
+    <script src="js/modules/habits/form.js"></script>
+    <script src="js/modules/experiments/lab.js"></script>
+    <script src="js/modules/experiments/wizard.js"></script>
+    <script src="js/modules/mood/entry.js"></script>
+    <script src="js/modules/mood/history.js"></script>
+    <script src="js/modules/life/grid.js"></script>
+    <script src="js/modules/life/events.js"></script>
+    
+    <!-- Main App -->
+    <script src="js/app.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                const swPath = new URL('./sw.js', window.location.href).href;
+                navigator.serviceWorker.register(swPath)
+                    .then((registration) => {
+                        console.log('[Life Compass] Service Worker registered:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.error('[Life Compass] Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+
+</html>

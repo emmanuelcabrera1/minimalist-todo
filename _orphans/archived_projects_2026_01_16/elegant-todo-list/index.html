@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elegant Todo List</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Tasks</h1>
+            <p class="subtitle">Stay organized, focused, and elegant.</p>
+        </header>
+
+        <section class="input-section">
+            <input type="text" id="todo-input" placeholder="What needs to be done?" aria-label="New task input">
+            <button id="add-btn" class="btn-primary">Add Task</button>
+        </section>
+
+        <section class="list-section">
+            <ul id="todo-list" class="todo-list">
+                <!-- Todo items will be added here dynamically -->
+            </ul>
+        </section>
+
+        <script src="script.js"></script>
+    </div>
+</body>
+
+</html>

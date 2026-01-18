@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memento Mori | Life in Weeks</title>
+  <meta name="description" content="A stoic reminder of your life in weeks. Memento Mori." />
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self';" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@1,400;1,600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <h1 class="fade-in-down">
+        <span class="italic">Memento</span> <span class="bold">Mori</span>
+      </h1>
+      <p class="subtitle fade-in-down delay-1">
+        "You could leave life right now. Let that determine what you do and say and think."
+      </p>
+    </header>
+
+    <main class="main-content">
+      <div class="controls fade-in-up delay-2">
+        <label for="birthdate" class="input-label">Enter your birth date</label>
+        <div class="input-wrapper">
+          <input type="date" id="birthdate" class="date-input" />
+          <span class="focus-border"></span>
+        </div>
+      </div>
+
+      <div class="stats-container fade-in-up delay-3" id="statsContainer">
+        <div class="stat-item">
+          <span class="stat-value" id="weeksLived">0</span>
+          <span class="stat-label">Weeks Lived</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value" id="weeksLeft">4,160</span>
+          <span class="stat-label">Weeks Remaining (est.)</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value" id="percentageLived">0%</span>
+          <span class="stat-label">Life Completed</span>
+        </div>
+      </div>
+
+      <div class="life-grid-container fade-in-up delay-4">
+        <div id="lifeGrid" class="life-grid"></div>
+      </div>
+    </main>
+
+    <footer class="app-footer fade-in-up delay-5">
+      <p>Designed with <span class="heart">♥</span> by Antigravity</p>
+    </footer>
+  </div>
+  <script src="script.js"></script>
+</body>
+
+</html>
