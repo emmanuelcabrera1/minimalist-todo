@@ -1,0 +1,66 @@
+/* 
+  Design Tokens - Minimalist Light Theme
+  Matching minimalist-todo aesthetic
+*/
+
+:root {
+  /* Colors - Light Minimalist Theme */
+  --bg-color: #f0f2f5;
+  --surface-color: rgba(255, 255, 255, 0.5);
+  --surface-hover: rgba(255, 255, 255, 0.7);
+  --text-primary: #1d1d1f;
+  --text-secondary: #86868b;
+  --text-muted: #aeaeb2;
+
+  /* Brand/Accent - Fresh Green */
+  --accent-color: #34c759;
+  --accent-glow: rgba(52, 199, 89, 0.3);
+  --accent-light: rgba(52, 199, 89, 0.1);
+
+  /* Semantic Colors */
+  --border-color: #e5e5ea;
+  --separator-color: rgba(0, 0, 0, 0.05);
+  --success-color: #34c759;
+  --error-color: #ff3b30;
+  --warning-color: #ff9500;
+
+  /* Glass Effect - Light Minimalist */
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.8);
+  --glass-blur: 20px;
+  --glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.04);
+
+  /* Typography */
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Spacing (8px Grid System) */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+
+  /* Animation */
+  --ease-standard: cubic-bezier(0.4, 0.0, 0.2, 1);
+  --ease-decelerate: cubic-bezier(0.0, 0.0, 0.2, 1);
+  --ease-accelerate: cubic-bezier(0.4, 0.0, 1, 1);
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-instant: 100ms;
+  --duration-short: 200ms;
+  --duration-medium: 400ms;
+  --duration-long: 600ms;
+
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+
+  /* Shadows - Soft Minimalist */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.04);
+}

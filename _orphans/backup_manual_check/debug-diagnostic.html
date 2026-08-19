@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experiments Web - Debug Diagnostic</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        #log {
+            background: #1a1a1a;
+            color: #0f0;
+            font-family: monospace;
+            padding: 15px;
+            border-radius: 8px;
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+
+        .log-entry {
+            margin-bottom: 4px;
+        }
+
+        .log-warning {
+            color: #ff0;
+        }
+
+        .log-error {
+            color: #f00;
+        }
+
+        .log-info {
+            color: #0ff;
+        }
+
+        #controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #000;
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #000;
+        }
+
+        #test-area {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .test-section {
+            margin-bottom: 15px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .test-section h3 {
+            margin-bottom: 10px;
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #f0f0f0;
+            margin: 4px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .pill.active {
+            background: #000;
+            color: #fff;
+        }
+
+        .experiment-row {
+            display: flex;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 12px;
+            margin: 8px 0;
+            cursor: pointer;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .progress-ring {
+            width: 50px;
+            height: 50px;
+            background: #eee;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tab-bar {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            background: #fff;
+            border-radius: 12px;
+        }
+
+        .tab-bar-item {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            background: #f0f0f0;
+        }
+
+        .tab-bar-item.active {
+            background: #000;
+            color: #fff;
+        }
+
+        #metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .metric {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🔬 Experiments Web - Debug Diagnostic</h1>
+
+    <div id="metrics">
+        <div class="metric">
+            <div class="metric-value" id="click-count">0</div>
+            <div class="metric-label">Total Clicks</div>
+        </div>
+        <div class="metric">
+            <div class="metric-value" id="render-count">0</div>
+            <div class="metric-label">Render Calls</div>
+        </div>
+        <div class="metric">
+            <div class="metric-value" id="handler-count">0</div>
+            <div class="metric-label">Handler Fires</div>
+        </div>
+    </div>
+
+    <div id="controls">
+        <button class="btn-primary" onclick="clearLog()">Clear Log</button>
+        <button class="btn-secondary" onclick="loadActualApp()">Load Real App.js</button>
+        <button class="btn-secondary" onclick="runStressTest()">Stress Test (10 rapid clicks)</button>
+    </div>
+
+    <div id="log"></div>
+
+    <div id="test-area">
+        <div class="test-section">
+            <h3>Tab Bar (click to test)</h3>
+            <div class="tab-bar" id="tabs">
+                <button class="tab-bar-item active" data-tab="experiments">Lab</button>
+                <button class="tab-bar-item" data-tab="gallery">Gallery</button>
+                <button class="tab-bar-item" data-tab="settings">Settings</button>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>Filter Pills (click to test)</h3>
+            <div id="pills">
+                <button class="pill active" data-filter="ALL">ALL</button>
+                <button class="pill" data-filter="HEALTH">HEALTH</button>
+                <button class="pill" data-filter="WORK">WORK</button>
+                <button class="pill" data-filter="EMPTY">EMPTY (no experiments)</button>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>Experiment Rows (click to test)</h3>
+            <div id="experiments">
+                <div class="experiment-row" data-id="exp-001">
+                    <div class="progress-ring">50%</div>
+                    <div>
+                        <strong>Morning Meditation</strong>
+                        <div style="color: #666; font-size: 12px;">5 days completed</div>
+                    </div>
+                </div>
+                <div class="experiment-row" data-id="exp-002">
+                    <div class="progress-ring">75%</div>
+                    <div>
+                        <strong>Cold Showers</strong>
+                        <div style="color: #666; font-size: 12px;">12 days completed</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Metrics
+        let clickCount = 0;
+        let renderCount = 0;
+        let handlerCount = 0;
+
+        // State (simulating app state)
+        const state = {
+            currentTab: 'experiments',
+            currentExperiment: null,
+            currentFilter: 'ALL'
+        };
+
+        // Logging
+        function log(message, type = '') {
+            const logEl = document.getElementById('log');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type ? 'log-' + type : ''}`;
+            entry.textContent = `[${new Date().toISOString().substr(11, 12)}] ${message}`;
+            logEl.appendChild(entry);
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+            clickCount = 0; renderCount = 0; handlerCount = 0;
+            updateMetrics();
+            log('Log cleared', 'info');
+        }
+
+        function updateMetrics() {
+            document.getElementById('click-count').textContent = clickCount;
+            document.getElementById('render-count').textContent = renderCount;
+            document.getElementById('handler-count').textContent = handlerCount;
+        }
+
+        // Simulated render function
+        function render() {
+            renderCount++;
+            updateMetrics();
+            log(`render() called - Tab: ${state.currentTab}, Exp: ${state.currentExperiment}, Filter: ${state.currentFilter}`);
+
+            // Check for potential infinite loop
+            if (renderCount > 100) {
+                log('⚠️ INFINITE LOOP DETECTED! Stopping...', 'error');
+                throw new Error('Infinite loop detected');
+            }
+        }
+
+        // Main click listener on document (like #app in real code)
+        document.getElementById('test-area').addEventListener('click', (e) => {
+            clickCount++;
+            updateMetrics();
+            log(`--- CLICK EVENT START (Target: ${e.target.tagName}.${e.target.className}) ---`, 'info');
+
+            // Handler 1: Tab navigation
+            const tabItem = e.target.closest('.tab-bar-item');
+            if (tabItem) {
+                handlerCount++;
+                updateMetrics();
+                log(`Handler: Tab navigation - ${tabItem.dataset.tab}`);
+                state.currentTab = tabItem.dataset.tab;
+                state.currentExperiment = null;
+                state.currentFilter = 'ALL';
+
+                // Update UI
+                document.querySelectorAll('.tab-bar-item').forEach(t => t.classList.remove('active'));
+                tabItem.classList.add('active');
+
+                render();
+                log('Tab handler completed with return');
+                return; // IMPORTANT: exit
+            }
+
+            // Handler 2: Filter pills
+            const pill = e.target.closest('.pill[data-filter]');
+            if (pill) {
+                handlerCount++;
+                updateMetrics();
+                log(`Handler: Filter pill - ${pill.dataset.filter}`);
+                state.currentFilter = pill.dataset.filter;
+
+                // Update UI
+                document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+
+                render();
+                log('Filter handler completed with return');
+                return; // IMPORTANT: exit
+            }
+
+            // Handler 3: Experiment row
+            const row = e.target.closest('.experiment-row');
+            if (row) {
+                handlerCount++;
+                updateMetrics();
+                log(`Handler: Experiment row - ${row.dataset.id}`);
+                state.currentExperiment = row.dataset.id;
+                render();
+                log('Experiment handler completed with return');
+                return; // IMPORTANT: exit
+            }
+
+            log('No handler matched this click');
+        });
+
+        // Stress test
+        function runStressTest() {
+            log('Starting stress test - 10 rapid clicks on filter pills...', 'warning');
+            const pills = document.querySelectorAll('.pill');
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i >= 10) {
+                    clearInterval(interval);
+                    log('Stress test complete!', 'info');
+                    return;
+                }
+                pills[i % pills.length].click();
+                i++;
+            }, 50);
+        }
+
+        // Load actual app.js for comparison
+        function loadActualApp() {
+            log('Loading actual app.js...', 'info');
+            const script = document.createElement('script');
+            script.src = 'js/app.js';
+            script.onerror = () => log('Failed to load app.js', 'error');
+            script.onload = () => log('app.js loaded successfully', 'info');
+            document.body.appendChild(script);
+        }
+
+        // Initial log
+        log('Diagnostic page loaded. Click any UI element to test event handling.', 'info');
+        log('Watch the metrics and log for duplicate handler fires or infinite loops.', 'info');
+    </script>
+</body>
+
+</html>

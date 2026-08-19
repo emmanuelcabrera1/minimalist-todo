@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo List | Stay Organized</title>
+    <meta name="description" content="A sleek, modern todo list app to manage your tasks efficiently." />
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self';" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="app-header fade-in-down">
+            <h1>My Tasks</h1>
+            <p class="date-display" id="dateDisplay"></p>
+        </header>
+
+        <main class="main-content">
+            <!-- Add Task Section -->
+            <section class="add-task-section fade-in-up delay-1">
+                <form id="addTaskForm" class="add-task-form">
+                    <div class="input-wrapper">
+                        <input type="text" id="taskInput" class="task-input" placeholder="What needs to be done?"
+                            autocomplete="off" required />
+                        <span class="focus-border"></span>
+                    </div>
+                    <button type="submit" class="add-btn" aria-label="Add task">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </button>
+                </form>
+            </section>
+
+            <!-- Filter Controls -->
+            <section class="filter-section fade-in-up delay-2">
+                <div class="filter-controls" role="tablist" aria-label="Task filters">
+                    <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true">All</button>
+                    <button class="filter-btn" data-filter="active" role="tab" aria-selected="false">Active</button>
+                    <button class="filter-btn" data-filter="completed" role="tab"
+                        aria-selected="false">Completed</button>
+                </div>
+                <div class="task-count">
+                    <span id="taskCount">0</span> tasks remaining
+                </div>
+            </section>
+
+            <!-- Task List -->
+            <section class="task-list-section fade-in-up delay-3">
+                <ul id="taskList" class="task-list" aria-live="polite"></ul>
+                <div id="emptyState" class="empty-state">
+                    <p>No tasks yet. Add one above!</p>
+                </div>
+            </section>
+
+            <!-- Clear Completed -->
+            <section class="actions-section fade-in-up delay-4">
+                <button id="clearCompletedBtn" class="clear-btn" disabled>Clear Completed</button>
+            </section>
+        </main>
+
+        <footer class="app-footer fade-in-up delay-5">
+            <p>Designed with <span class="heart">♥</span> by Antigravity</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

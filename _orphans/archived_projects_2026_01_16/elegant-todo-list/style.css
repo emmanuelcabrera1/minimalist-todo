@@ -1,0 +1,261 @@
+/* Principle #4: Consistent Color System (60-30-10 Rule) */
+:root {
+    /* 60% - Primary/Background (Using a very soft off-white/gray) */
+    --color-primary: #F9FAFB;
+
+    /* 30% - Secondary/Content (Deep rich gray) */
+    --color-secondary: #1F2937;
+
+    /* 10% - Accent (Subtle Indigo) */
+    --color-accent: #6366F1;
+    --color-accent-hover: #4F46E5;
+
+    /* Neutral/Feedback Colors */
+    --color-text-muted: #6B7280;
+    --color-danger: #EF4444;
+    --color-success: #10B981;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+    /* Spacing */
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+}
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--color-primary);
+    color: var(--color-secondary);
+    font-family: 'Spline Sans', sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding-top: 5rem;
+}
+
+/* Principle #1: Embrace Negative Space */
+.container {
+    width: 100%;
+    max-width: 600px;
+    /* Constrained width for focus */
+    padding: 0 1.5rem;
+}
+
+/* Principle #3: Visual Hierarchy */
+header {
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    color: var(--color-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: var(--color-text-muted);
+    font-size: 1.125rem;
+    font-weight: 400;
+}
+
+/* Input Section */
+.input-section {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    background: white;
+    padding: 0.5rem;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    transition: box-shadow 0.3s ease;
+}
+
+.input-section:focus-within {
+    box-shadow: var(--shadow-lg);
+}
+
+input[type="text"] {
+    flex: 1;
+    border: none;
+    padding: 1rem;
+    font-size: 1rem;
+    font-family: inherit;
+    color: var(--color-secondary);
+    outline: none;
+    background: transparent;
+}
+
+input[type="text"]::placeholder {
+    color: #9CA3AF;
+}
+
+/* Button Styling (Reviewing Principle #4 & #5) */
+.btn-primary {
+    background-color: var(--color-accent);
+    color: white;
+    border: none;
+    padding: 0 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--color-accent-hover);
+    transform: translateY(-1px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+/* Todo List Items */
+.todo-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.todo-item {
+    background: white;
+    padding: 1.25rem;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease;
+    animation: slideIn 0.3s ease-out forwards;
+}
+
+.todo-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.todo-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+/* Custom Checkbox */
+.checkbox {
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border: 2px solid #E5E7EB;
+    border-radius: 50%;
+    /* Circle style for elegance */
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.checkbox:checked {
+    background-color: var(--color-success);
+    border-color: var(--color-success);
+}
+
+.checkbox:checked::after {
+    content: '✓';
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.task-text {
+    font-size: 1.125rem;
+    transition: color 0.2s ease;
+}
+
+.completed .task-text {
+    text-decoration: line-through;
+    color: var(--color-text-muted);
+}
+
+.delete-btn {
+    background: transparent;
+    border: none;
+    color: #D1D5DB;
+    cursor: pointer;
+    padding: 0.5rem;
+    font-size: 1.25rem;
+    transition: color 0.2s ease;
+    opacity: 0;
+    /* Hidden by default for cleaner look */
+}
+
+.todo-item:hover .delete-btn {
+    opacity: 1;
+    /* Show on hover */
+}
+
+.delete-btn:hover {
+    color: var(--color-danger);
+}
+
+/* Animation */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideOut {
+    to {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    h1 {
+        font-size: 2.25rem;
+    }
+
+    .input-section {
+        flex-direction: column;
+        padding: 1rem;
+        gap: 0.5rem;
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 0.75rem;
+    }
+
+    .delete-btn {
+        opacity: 1;
+        /* Always show delete on mobile since no hover */
+    }
+}

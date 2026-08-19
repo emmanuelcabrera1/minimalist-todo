@@ -1,0 +1,452 @@
+/* ============================================
+   LIFE COMPASS - Animation System
+   ============================================
+   Micro-interactions and transitions.
+   ============================================ */
+
+/* ========================================
+   KEYFRAME ANIMATIONS
+   ======================================== */
+
+/* Fade In */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+/* Slide Animations */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Scale Animations */
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes scaleOut {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+}
+
+/* Pop Animation (for completion feedback) */
+@keyframes pop {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Shake Animation (for errors) */
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    20% {
+        transform: translateX(-4px);
+    }
+
+    40% {
+        transform: translateX(4px);
+    }
+
+    60% {
+        transform: translateX(-4px);
+    }
+
+    80% {
+        transform: translateX(4px);
+    }
+}
+
+/* Pulse Animation (for current week) */
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.6;
+    }
+}
+
+/* Spin Animation */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Bounce Animation */
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+/* Progress Ring Fill Animation */
+@keyframes progressRingFill {
+    from {
+        stroke-dashoffset: var(--ring-circumference);
+    }
+
+    to {
+        stroke-dashoffset: var(--ring-offset);
+    }
+}
+
+/* Streak Fire Flicker */
+@keyframes fireFlicker {
+
+    0%,
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
+
+    25% {
+        transform: scale(1.05) rotate(-2deg);
+    }
+
+    50% {
+        transform: scale(1.1) rotate(0deg);
+    }
+
+    75% {
+        transform: scale(1.05) rotate(2deg);
+    }
+}
+
+/* ========================================
+   ANIMATION CLASSES
+   ======================================== */
+
+.animate-fadeIn {
+    animation: fadeIn var(--transition-normal) forwards;
+}
+
+.animate-fadeOut {
+    animation: fadeOut var(--transition-normal) forwards;
+}
+
+.animate-slideInUp {
+    animation: slideInUp var(--transition-normal) forwards;
+}
+
+.animate-slideInDown {
+    animation: slideInDown var(--transition-normal) forwards;
+}
+
+.animate-slideInLeft {
+    animation: slideInLeft var(--transition-normal) forwards;
+}
+
+.animate-slideInRight {
+    animation: slideInRight var(--transition-normal) forwards;
+}
+
+.animate-scaleIn {
+    animation: scaleIn var(--transition-spring) forwards;
+}
+
+.animate-scaleOut {
+    animation: scaleOut var(--transition-fast) forwards;
+}
+
+.animate-pop {
+    animation: pop 300ms ease forwards;
+}
+
+.animate-shake {
+    animation: shake 400ms ease;
+}
+
+.animate-pulse {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+.animate-bounce {
+    animation: bounce 600ms ease infinite;
+}
+
+/* Staggered Children Animation */
+.stagger-children>* {
+    opacity: 0;
+    animation: slideInUp var(--transition-normal) forwards;
+}
+
+.stagger-children>*:nth-child(1) {
+    animation-delay: 0ms;
+}
+
+.stagger-children>*:nth-child(2) {
+    animation-delay: 50ms;
+}
+
+.stagger-children>*:nth-child(3) {
+    animation-delay: 100ms;
+}
+
+.stagger-children>*:nth-child(4) {
+    animation-delay: 150ms;
+}
+
+.stagger-children>*:nth-child(5) {
+    animation-delay: 200ms;
+}
+
+.stagger-children>*:nth-child(6) {
+    animation-delay: 250ms;
+}
+
+.stagger-children>*:nth-child(7) {
+    animation-delay: 300ms;
+}
+
+.stagger-children>*:nth-child(8) {
+    animation-delay: 350ms;
+}
+
+/* ========================================
+   INTERACTION FEEDBACK
+   ======================================== */
+
+/* Task Completion Animation */
+.task-complete .form-check-input {
+    animation: pop 300ms ease forwards;
+}
+
+.task-complete .list-item-title {
+    text-decoration: line-through;
+    color: var(--text-tertiary);
+    transition: all var(--transition-normal);
+}
+
+/* Habit Check Animation */
+.habit-checked {
+    animation: pop 300ms ease forwards;
+}
+
+/* Streak Fire Animation */
+.streak-fire.active {
+    animation: fireFlicker 1.5s ease infinite;
+}
+
+/* ========================================
+   SWIPE GESTURE HINTS
+   ======================================== */
+
+.swipe-hint {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--button-border-radius);
+    font-size: var(--font-size-footnote);
+    font-weight: var(--font-weight-medium);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.swipe-hint-left {
+    left: var(--space-md);
+    background: var(--error);
+}
+
+.swipe-hint-right {
+    right: var(--space-md);
+    background: var(--accent-habits);
+}
+
+.swiping .swipe-hint {
+    opacity: 1;
+}
+
+/* ========================================
+   PAGE TRANSITIONS
+   ======================================== */
+
+.page-enter {
+    animation: slideInRight 300ms ease forwards;
+}
+
+.page-exit {
+    animation: slideInLeft 300ms ease reverse forwards;
+}
+
+.page-enter-back {
+    animation: slideInLeft 300ms ease forwards;
+}
+
+.page-exit-back {
+    animation: slideInRight 300ms ease reverse forwards;
+}
+
+/* ========================================
+   MODAL ANIMATIONS
+   ======================================== */
+
+.modal-overlay {
+    animation: fadeIn 200ms ease forwards;
+}
+
+.modal-container {
+    animation: slideInUp 300ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.modal-overlay.closing {
+    animation: fadeOut 150ms ease forwards;
+}
+
+.modal-container.closing {
+    animation: scaleOut 150ms ease forwards;
+}
+
+/* ========================================
+   TOAST ANIMATIONS
+   ======================================== */
+
+.toast {
+    animation: slideInDown 300ms ease forwards;
+}
+
+.toast.exiting {
+    animation: slideInUp 200ms ease reverse forwards;
+}
+
+/* ========================================
+   LOADING STATES
+   ======================================== */
+
+.loading-spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--bg-elevated);
+    border-top-color: var(--accent-experiments);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+.loading-dots {
+    display: flex;
+    gap: var(--space-xs);
+}
+
+.loading-dots span {
+    width: 8px;
+    height: 8px;
+    background: var(--text-tertiary);
+    border-radius: 50%;
+    animation: bounce 1s ease infinite;
+}
+
+.loading-dots span:nth-child(1) {
+    animation-delay: 0ms;
+}
+
+.loading-dots span:nth-child(2) {
+    animation-delay: 150ms;
+}
+
+.loading-dots span:nth-child(3) {
+    animation-delay: 300ms;
+}

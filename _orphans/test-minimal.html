@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimal Test</title>
+    <style>
+        body { font-family: sans-serif; padding: 40px; background: #f0f2f5; }
+        .glass-card { background: rgba(255,255,255,0.8); padding: 40px; border-radius: 24px; max-width: 500px; margin: 0 auto; }
+        .header { font-size: 36px; font-weight: 700; margin-bottom: 32px; }
+        .task-item { padding: 20px 0; border-bottom: 1px solid #eee; display: flex; gap: 16px; }
+        .add-form { display: flex; gap: 12px; margin-top: 16px; padding-top: 16px; border-top: 1px solid #eee; }
+        .add-input { flex: 1; padding: 12px 16px; border: 1px solid #e5e5ea; border-radius: 12px; font-size: 15px; }
+        .add-btn { width: 44px; height: 44px; border: none; border-radius: 50%; background: #34c759; color: white; font-size: 24px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="glass-card">
+        <h1 class="header">Today</h1>
+        <div id="today-list">
+            <!-- React will render here -->
+            <p style="color: #999;">Loading React...</p>
+        </div>
+    </div>
+
+    <!-- React & Babel -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Simple Test App -->
+    <script type="text/babel">
+        const { useState } = React;
+
+        function AddTaskForm({ onAdd }) {
+            const [text, setText] = useState('');
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                if (text.trim()) {
+                    onAdd(text.trim());
+                    setText('');
+                }
+            };
+
+            return (
+                <form className="add-form" onSubmit={handleSubmit}>
+                    <input
+                        type="text"
+                        className="add-input"
+                        placeholder="Add a new task..."
+                        value={text}
+                        onChange={(e) => setText(e.target.value)}
+                    />
+                    <button type="submit" className="add-btn">+</button>
+                </form>
+            );
+        }
+
+        function TaskItem({ task }) {
+            return (
+                <div className="task-item">
+                    <div>{task.text}</div>
+                </div>
+            );
+        }
+
+        function TodayContainer() {
+            const [tasks, setTasks] = useState([
+                { id: 1, text: 'Test task 1' },
+                { id: 2, text: 'Test task 2' }
+            ]);
+
+            const addTask = (text) => {
+                const newTask = {
+                    id: Date.now(),
+                    text: text
+                };
+                setTasks([...tasks, newTask]);
+                console.log('Added task:', newTask);
+            };
+
+            return (
+                <>
+                    {tasks.map(task => (
+                        <TaskItem key={task.id} task={task} />
+                    ))}
+                    <AddTaskForm onAdd={addTask} />
+                </>
+            );
+        }
+
+        // Render when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOMContentLoaded fired');
+            console.log('React:', typeof React);
+            console.log('ReactDOM:', typeof ReactDOM);
+
+            const container = document.getElementById('today-list');
+            console.log('Container:', container);
+
+            if (container) {
+                console.log('Creating React root...');
+                const root = ReactDOM.createRoot(container);
+                console.log('Rendering component...');
+                root.render(<TodayContainer />);
+                console.log('Render complete!');
+            }
+        });
+    </script>
+</body>
+</html>

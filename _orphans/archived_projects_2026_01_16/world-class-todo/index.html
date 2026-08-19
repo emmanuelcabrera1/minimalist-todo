@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="A premium, world-class todo list application with elegant design and smooth animations.">
+    <title>World-Class Todo</title>
+
+    <!-- Design System Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%2334C759'/><path d='M30 50 L45 65 L70 35' stroke='white' stroke-width='8' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+
+    <!-- Design System Styles -->
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Glass Card Container -->
+        <div class="glass-card">
+            <!-- Header -->
+            <header class="app-header">
+                <h1>Today</h1>
+                <p class="date-display" id="date-display"></p>
+            </header>
+
+            <!-- Progress Section -->
+            <section class="progress-section" aria-label="Task completion progress">
+                <div class="progress-info">
+                    <span class="progress-text" id="progress-text">0 of 0 tasks completed</span>
+                    <span class="progress-percent" id="progress-percent">0%</span>
+                </div>
+                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </section>
+
+            <!-- Add Task Form -->
+            <form class="add-task-form" id="add-task-form" aria-label="Add new task">
+                <label for="task-input" class="visually-hidden">Task description</label>
+                <input type="text" id="task-input" class="task-input" placeholder="What needs to be done?"
+                    maxlength="200" autocomplete="off" required>
+                <button type="submit" class="btn add-btn" aria-label="Add task">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                        <path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </button>
+            </form>
+
+            <!-- Filter Tabs -->
+            <nav class="filter-tabs" role="tablist" aria-label="Filter tasks">
+                <button class="filter-tab active" role="tab" aria-selected="true" data-filter="all">All</button>
+                <button class="filter-tab" role="tab" aria-selected="false" data-filter="active">Active</button>
+                <button class="filter-tab" role="tab" aria-selected="false" data-filter="completed">Done</button>
+            </nav>
+
+            <!-- Task List -->
+            <main>
+                <ul class="task-list" id="task-list" role="list" aria-label="Task list">
+                    <!-- Tasks rendered by JavaScript -->
+                </ul>
+
+                <!-- Empty State -->
+                <div class="empty-state" id="empty-state" hidden>
+                    <div class="empty-icon" aria-hidden="true">✨</div>
+                    <p class="empty-text">No tasks yet. Add one above!</p>
+                </div>
+            </main>
+
+            <!-- Footer Actions -->
+            <footer class="app-footer" id="app-footer" hidden>
+                <span class="items-left" id="items-left">0 items left</span>
+                <button class="clear-completed-btn" id="clear-completed" type="button">
+                    Clear completed
+                </button>
+            </footer>
+        </div>
+
+        <!-- Attribution -->
+        <p class="attribution">&copy; Antigravity • Built with The Elegance Formula</p>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>

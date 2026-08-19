@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Experiments">
+    <meta name="theme-color" content="#FAFAFA">
+    <meta name="description" content="Track your life experiments using the Tiny Experiments Framework">
+
+    <!-- Security: Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data:;">
+
+    <title>Experiments</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
+
+    <!-- Fonts - SF Pro approximation -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+
+<body>
+    <div id="app">
+        <!-- Dynamic content rendered by JavaScript -->
+    </div>
+
+    <!-- Core Data & Utilities -->
+    <script src="js/data.js"></script>
+    <script src="js/streak.js"></script>
+    <script src="js/mood.js"></script>
+    <script src="js/insights.js"></script>
+    <script src="js/adaptation.js"></script>
+    <script src="js/partners.js"></script>
+    <script src="js/challenges.js"></script>
+    <script src="js/summary.js"></script>
+
+    <!-- UI Components & App -->
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // Use relative path for GitHub Pages subdirectory support
+                const swPath = new URL('./sw.js?v=v1.0.4-DEBUG', window.location.href).href;
+                navigator.serviceWorker.register(swPath)
+                    .then((registration) => {
+                        console.log('[App] Service Worker registered:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.error('[App] Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+
+</html>

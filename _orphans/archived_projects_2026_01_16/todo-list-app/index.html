@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Tasks</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+    <div class="background-mesh"></div>
+
+    <main class="app-container">
+        <header class="app-header">
+            <h1>Tasks</h1>
+            <p class="date-display" id="dateDisplay">Wednesday, Jan 7</p>
+        </header>
+
+        <div class="input-group">
+            <input type="text" id="taskInput" placeholder="What needs to be done?" aria-label="New task">
+            <button id="addTaskBtn" aria-label="Add task">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+        </div>
+
+        <div class="controls">
+            <div class="tabs">
+                <button class="tab-btn active" data-filter="all">All</button>
+                <button class="tab-btn" data-filter="active">Active</button>
+                <button class="tab-btn" data-filter="completed">Completed</button>
+            </div>
+            <div class="stats">
+                <span id="itemsLeft">0 items left</span>
+            </div>
+        </div>
+
+        <ul class="task-list" id="taskList">
+            <!-- Tasks will be injected here -->
+        </ul>
+    </main>
+</body>
+
+</html>

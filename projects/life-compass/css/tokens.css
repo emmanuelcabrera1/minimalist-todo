@@ -1,0 +1,223 @@
+/* ============================================
+   LIFE COMPASS - Design Tokens
+   ============================================
+   Core design system tokens for colors, 
+   typography, spacing, and component sizing.
+   ============================================ */
+
+:root {
+    /* ========================================
+       COLORS - Dark Theme (Primary)
+       ======================================== */
+    
+    /* Backgrounds */
+    --bg-primary: #000000;          /* Pure black for OLED */
+    --bg-surface: #1C1C1E;          /* Cards, elevated surfaces */
+    --bg-elevated: #2C2C2E;         /* Modals, overlays */
+    --bg-pressed: #3A3A3C;          /* Pressed states */
+    
+    /* Text */
+    --text-primary: #FFFFFF;
+    --text-secondary: #8E8E93;
+    --text-tertiary: #636366;
+    
+    /* Module Accent Colors */
+    --accent-tasks: #FF9500;        /* Orange - Tasks module */
+    --accent-experiments: #5E5CE6;  /* Indigo - Experiments module */
+    --accent-habits: #30D158;       /* Green - Habits module */
+    --accent-mood: #FF375F;         /* Pink - Mood module */
+    --accent-life: #64D2FF;         /* Cyan - Life module */
+    
+    /* Semantic Colors */
+    --success: #30D158;
+    --warning: #FFD60A;
+    --error: #FF453A;
+    --info: #64D2FF;
+    
+    /* Life Grid Colors */
+    --life-lived: #3478F6;          /* Blue - past weeks */
+    --life-current: #FFFFFF;        /* White - current week */
+    --life-healthy: #FF6B8A;        /* Pink - healthy future */
+    --life-later: rgba(255, 107, 138, 0.5); /* Faded pink - later years */
+    
+    /* Priority Colors */
+    --priority-1: #FF453A;          /* Urgent */
+    --priority-2: #FF9500;          /* High */
+    --priority-3: #64D2FF;          /* Medium */
+    --priority-4: #636366;          /* Low/None */
+    
+    /* ========================================
+       TYPOGRAPHY
+       ======================================== */
+    
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    
+    /* Font Sizes */
+    --font-size-large-title: 34px;
+    --font-size-title-1: 28px;
+    --font-size-title-2: 22px;
+    --font-size-title-3: 20px;
+    --font-size-headline: 17px;
+    --font-size-body: 17px;
+    --font-size-callout: 16px;
+    --font-size-subhead: 15px;
+    --font-size-footnote: 13px;
+    --font-size-caption-1: 12px;
+    --font-size-caption-2: 11px;
+    
+    /* Font Weights */
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    
+    /* Line Heights */
+    --line-height-tight: 1.2;
+    --line-height-normal: 1.4;
+    --line-height-relaxed: 1.6;
+    
+    /* ========================================
+       SPACING
+       ======================================== */
+    
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+    --space-xxl: 48px;
+    
+    /* ========================================
+       COMPONENT SIZING
+       ======================================== */
+    
+    --touch-target-min: 44px;
+    --card-border-radius: 12px;
+    --button-border-radius: 8px;
+    --input-border-radius: 8px;
+    --bottom-nav-height: 83px;
+    --card-padding: 16px;
+    --screen-margin: 16px;
+    
+    /* Safe Areas (for iOS notch/home indicator) */
+    --safe-area-top: env(safe-area-inset-top, 0px);
+    --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-area-left: env(safe-area-inset-left, 0px);
+    --safe-area-right: env(safe-area-inset-right, 0px);
+    
+    /* ========================================
+       SHADOWS & EFFECTS
+       ======================================== */
+    
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.6);
+    
+    /* Glassmorphism */
+    --glass-bg: rgba(28, 28, 30, 0.8);
+    --glass-blur: blur(20px);
+    --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+    
+    /* ========================================
+       TRANSITIONS
+       ======================================== */
+    
+    --transition-fast: 150ms ease;
+    --transition-normal: 250ms ease;
+    --transition-slow: 350ms ease;
+    --transition-spring: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    
+    /* ========================================
+       Z-INDEX SCALE
+       ======================================== */
+    
+    --z-base: 0;
+    --z-dropdown: 100;
+    --z-sticky: 200;
+    --z-fixed: 300;
+    --z-modal-backdrop: 400;
+    --z-modal: 500;
+    --z-popover: 600;
+    --z-tooltip: 700;
+    --z-toast: 800;
+}
+
+/* ============================================
+   TYPOGRAPHY UTILITY CLASSES
+   ============================================ */
+
+.text-large-title {
+    font-size: var(--font-size-large-title);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+}
+
+.text-title-1 {
+    font-size: var(--font-size-title-1);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+}
+
+.text-title-2 {
+    font-size: var(--font-size-title-2);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+}
+
+.text-title-3 {
+    font-size: var(--font-size-title-3);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-tight);
+}
+
+.text-headline {
+    font-size: var(--font-size-headline);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-normal);
+}
+
+.text-body {
+    font-size: var(--font-size-body);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-normal);
+}
+
+.text-callout {
+    font-size: var(--font-size-callout);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-normal);
+}
+
+.text-subhead {
+    font-size: var(--font-size-subhead);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-normal);
+}
+
+.text-footnote {
+    font-size: var(--font-size-footnote);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-normal);
+}
+
+.text-caption {
+    font-size: var(--font-size-caption-1);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-normal);
+}
+
+/* Text Colors */
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-tertiary { color: var(--text-tertiary); }
+.text-success { color: var(--success); }
+.text-warning { color: var(--warning); }
+.text-error { color: var(--error); }
+
+/* Module Accent Text */
+.text-tasks { color: var(--accent-tasks); }
+.text-experiments { color: var(--accent-experiments); }
+.text-habits { color: var(--accent-habits); }
+.text-mood { color: var(--accent-mood); }
+.text-life { color: var(--accent-life); }

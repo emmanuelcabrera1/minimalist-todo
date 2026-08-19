@@ -1,0 +1,301 @@
+/* 
+  Component Styles for Simple Todo
+  Uses Design Tokens from tokens.css
+*/
+
+/* =========================
+   App Container
+   ========================= */
+.app-container {
+    max-width: 500px;
+    width: 100%;
+    margin: var(--space-2xl) auto;
+    padding: var(--space-lg);
+    background: linear-gradient(135deg,
+            rgba(26, 26, 26, 0.9) 0%,
+            rgba(26, 26, 26, 0.7) 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+header {
+    text-align: center;
+    margin-bottom: var(--space-xl);
+}
+
+header h1 {
+    color: var(--accent-color);
+    margin-bottom: var(--space-xs);
+}
+
+header p {
+    margin-bottom: 0;
+}
+
+/* =========================
+   Todo Form
+   ========================= */
+.todo-form {
+    display: flex;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+}
+
+.todo-input {
+    flex: 1;
+    padding: var(--space-md);
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-family: var(--font-main);
+    font-size: 1rem;
+    transition: border-color var(--duration-short) var(--ease-standard),
+        box-shadow var(--duration-short) var(--ease-standard);
+}
+
+.todo-input::placeholder {
+    color: var(--text-secondary);
+}
+
+.todo-input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-md);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-family: var(--font-main);
+    font-weight: 600;
+    transition: all var(--duration-short) var(--ease-standard);
+}
+
+.btn-add {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    min-width: 52px;
+}
+
+.btn-add:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 16px var(--accent-glow);
+}
+
+.btn-add:active {
+    transform: scale(0.98);
+}
+
+/* =========================
+   Todo List
+   ========================= */
+.todo-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.todo-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color var(--duration-short) var(--ease-standard);
+}
+
+.todo-item:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.todo-item:last-child {
+    border-bottom: none;
+}
+
+/* Checkbox */
+.todo-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    transition: all var(--duration-short) var(--ease-standard);
+}
+
+.todo-checkbox:hover {
+    border-color: var(--accent-color);
+}
+
+.todo-checkbox:checked {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.todo-checkbox:checked::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 8px;
+    width: 5px;
+    height: 10px;
+    border: solid var(--bg-color);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* Todo Text */
+.todo-text {
+    flex: 1;
+    color: var(--text-primary);
+    word-break: break-word;
+}
+
+.todo-item.completed .todo-text {
+    text-decoration: line-through;
+    color: var(--text-secondary);
+}
+
+/* Delete Button */
+.btn-delete {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: var(--space-xs);
+    border-radius: var(--radius-sm);
+    opacity: 0;
+    transition: all var(--duration-short) var(--ease-standard);
+}
+
+.todo-item:hover .btn-delete {
+    opacity: 1;
+}
+
+.btn-delete:hover {
+    color: var(--error-color);
+    background-color: rgba(244, 67, 54, 0.1);
+}
+
+/* =========================
+   Todo Footer
+   ========================= */
+.todo-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    padding-top: var(--space-md);
+    margin-top: var(--space-md);
+    border-top: 1px solid var(--border-color);
+}
+
+.todo-count {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.filters {
+    display: flex;
+    gap: var(--space-xs);
+}
+
+.filter-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-secondary);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all var(--duration-short) var(--ease-standard);
+}
+
+.filter-btn:hover {
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+.filter-btn.active {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.btn-clear {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 0.875rem;
+    padding: var(--space-xs) var(--space-sm);
+    transition: color var(--duration-short) var(--ease-standard);
+}
+
+.btn-clear:hover {
+    color: var(--error-color);
+}
+
+/* =========================
+   App Footer
+   ========================= */
+.app-footer {
+    text-align: center;
+    margin-top: var(--space-xl);
+    padding-top: var(--space-md);
+}
+
+.app-footer p {
+    font-size: 0.875rem;
+    margin-bottom: 0;
+}
+
+/* =========================
+   Empty State
+   ========================= */
+.empty-state {
+    text-align: center;
+    padding: var(--space-2xl) var(--space-lg);
+    color: var(--text-secondary);
+}
+
+.empty-state svg {
+    margin-bottom: var(--space-md);
+    opacity: 0.5;
+}
+
+/* =========================
+   Animations
+   ========================= */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.todo-item {
+    animation: fadeIn var(--duration-medium) var(--ease-standard);
+}
+
+/* Hide footer when no todos */
+.todo-footer.hidden {
+    display: none;
+}

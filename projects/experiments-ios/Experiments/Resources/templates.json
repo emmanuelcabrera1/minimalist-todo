@@ -1,0 +1,136 @@
+{
+    "templates": [
+        {
+            "id": "meditation-30",
+            "title": "30 Days of Meditation",
+            "purpose": "Reduce stress and improve focus through daily mindfulness practice",
+            "successCriteria": "Meditate for at least 10 minutes each morning before checking phone",
+            "durationDays": 30,
+            "frequency": "daily",
+            "category": "Health",
+            "description": "Start each morning with a 10-minute meditation session. Use a guided app or simply focus on your breath.",
+            "icon": "brain.head.profile"
+        },
+        {
+            "id": "no-social-7",
+            "title": "7-Day Digital Detox",
+            "purpose": "Reclaim time and attention from social media",
+            "successCriteria": "No social media apps for 7 consecutive days",
+            "durationDays": 7,
+            "frequency": "daily",
+            "category": "Focus",
+            "description": "Delete social apps from your phone. Notice how you spend your time differently.",
+            "icon": "iphone.slash"
+        },
+        {
+            "id": "reading-30",
+            "title": "Read 30 Minutes Daily",
+            "purpose": "Build a consistent reading habit to learn and relax",
+            "successCriteria": "Read for 30 minutes before bed instead of screens",
+            "durationDays": 30,
+            "frequency": "daily",
+            "category": "Growth",
+            "description": "Replace evening screen time with book time. Keep a book on your nightstand.",
+            "icon": "book"
+        },
+        {
+            "id": "gratitude-21",
+            "title": "21-Day Gratitude Journal",
+            "purpose": "Shift perspective toward positivity and appreciation",
+            "successCriteria": "Write 3 things you're grateful for each night",
+            "durationDays": 21,
+            "frequency": "daily",
+            "category": "Relationships",
+            "description": "End each day by writing what went well. Be specific and personal.",
+            "icon": "heart.text.square"
+        },
+        {
+            "id": "cold-shower-14",
+            "title": "Cold Shower Challenge",
+            "purpose": "Build mental resilience and boost energy",
+            "successCriteria": "End every shower with 30 seconds of cold water",
+            "durationDays": 14,
+            "frequency": "daily",
+            "category": "Health",
+            "description": "Gradually increase cold exposure. Start with 15 seconds and work up.",
+            "icon": "snowflake"
+        },
+        {
+            "id": "no-complaining-7",
+            "title": "No Complaints Week",
+            "purpose": "Develop awareness of negative speech patterns",
+            "successCriteria": "Go a full day without complaining, criticizing, or gossiping",
+            "durationDays": 7,
+            "frequency": "daily",
+            "category": "Relationships",
+            "description": "Wear a rubber band on your wrist. Snap it when you catch yourself complaining.",
+            "icon": "bubble.left.and.exclamationmark.bubble.right"
+        },
+        {
+            "id": "walking-30",
+            "title": "30-Minute Daily Walk",
+            "purpose": "Improve physical health and clear your mind",
+            "successCriteria": "Walk for 30 minutes without phone distractions",
+            "durationDays": 30,
+            "frequency": "daily",
+            "category": "Health",
+            "description": "Leave your phone at home or in your pocket. Just walk and observe.",
+            "icon": "figure.walk"
+        },
+        {
+            "id": "journaling-21",
+            "title": "Morning Pages",
+            "purpose": "Unlock creativity and process thoughts through writing",
+            "successCriteria": "Write 3 pages of stream-of-consciousness every morning",
+            "durationDays": 21,
+            "frequency": "daily",
+            "category": "Growth",
+            "description": "Write immediately upon waking, before coffee. Don't censor yourself.",
+            "icon": "pencil.and.scribble"
+        },
+        {
+            "id": "no-sugar-14",
+            "title": "Sugar-Free Fortnight",
+            "purpose": "Reset taste buds and reduce sugar dependency",
+            "successCriteria": "Avoid all added sugars for 14 days",
+            "durationDays": 14,
+            "frequency": "daily",
+            "category": "Health",
+            "description": "Read labels carefully. Focus on whole foods.",
+            "icon": "leaf"
+        },
+        {
+            "id": "learning-30",
+            "title": "Learn Something New",
+            "purpose": "Develop a new skill through consistent daily practice",
+            "successCriteria": "Practice for 30 minutes each day",
+            "durationDays": 30,
+            "frequency": "daily",
+            "category": "Growth",
+            "description": "Choose a skill: language, instrument, coding, etc. Use the same time slot daily.",
+            "icon": "lightbulb"
+        },
+        {
+            "id": "weekly-review",
+            "title": "Weekly Review Habit",
+            "purpose": "Build reflection and planning muscle",
+            "successCriteria": "Complete a 30-minute weekly review every Sunday",
+            "durationDays": 56,
+            "frequency": "weekly",
+            "category": "Focus",
+            "description": "Review wins, lessons, and set intentions for the coming week.",
+            "icon": "calendar.badge.clock"
+        },
+        {
+            "id": "reach-out-21",
+            "title": "Reach Out Daily",
+            "purpose": "Strengthen relationships through consistent connection",
+            "successCriteria": "Send one meaningful message to a friend or family member each day",
+            "durationDays": 21,
+            "frequency": "daily",
+            "category": "Relationships",
+            "description": "Not just 'hey' - share something specific or ask a real question.",
+            "icon": "message"
+        }
+    ]
+}

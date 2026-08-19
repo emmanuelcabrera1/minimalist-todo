@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Elegant Landing Page</title>
+    <style>
+      /* Reset */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      /* Color System */
+      :root {
+        --color-primary: #f8f9fa;
+        --color-secondary: #2672C7;
+        --color-accent: #e74c3c;
+        --color-dark: #1a1a1a;
+        --color-gray: #666;
+      }
+
+      /* Base Styles */
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: var(--color-primary);
+      }
+
+      /* Container */
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 60px 20px;
+      }
+
+      section {
+        margin-bottom: 80px;
+      }
+
+      /* Typography */
+      h1 {
+        font-size: 48px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        color: var(--color-dark);
+      }
+
+      h2 {
+        font-size: 32px;
+        font-weight: 600;
+        margin-bottom: 24px;
+        color: var(--color-dark);
+      }
+
+      h3 {
+        font-size: 24px;
+        margin-bottom: 12px;
+        color: var(--color-secondary);
+      }
+
+      p {
+        font-size: 18px;
+        color: var(--color-gray);
+        margin-bottom: 24px;
+        line-height: 1.8;
+      }
+
+      /* Button */
+      .button {
+        background-color: var(--color-accent);
+        color: white;
+        padding: 14px 32px;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+      }
+
+      .button:hover {
+        background-color: #c0392b;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+      }
+
+      /* Grid System */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-top: 40px;
+      }
+
+      /* Cards */
+      .card {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+      }
+
+      .card p {
+        font-size: 16px;
+        margin-bottom: 0;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 36px;
+        }
+
+        h2 {
+          font-size: 28px;
+        }
+
+        p {
+          font-size: 16px;
+        }
+
+        .container {
+          padding: 40px 15px;
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Hero Section -->
+      <section>
+        <h1>Welcome to Elegance</h1>
+        <h2>Design with Purpose</h2>
+        <p>
+          Building beautiful experiences, one principle at a time. Clean, simple, and effective
+          design that your users will love.
+        </p>
+        <a href="#" class="button">Get Started</a>
+      </section>
+
+      <!-- Features Section -->
+      <section>
+        <h2>Our Features</h2>
+        <div class="grid">
+          <div class="card">
+            <h3>Simple</h3>
+            <p>Clean and intuitive design that anyone can understand and use immediately.</p>
+          </div>
+          <div class="card">
+            <h3>Fast</h3>
+            <p>Optimized for speed and performance across all devices and connections.</p>
+          </div>
+          <div class="card">
+            <h3>Beautiful</h3>
+            <p>Every detail crafted with care to create a delightful user experience.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section>
+        <h2>Ready to Get Started?</h2>
+        <p>Join thousands of users who trust our platform every day.</p>
+        <a href="#" class="button">Sign Up Now</a>
+      </section>
+    </div>
+  </body>
+</html>

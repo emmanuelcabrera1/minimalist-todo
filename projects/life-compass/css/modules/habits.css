@@ -1,0 +1,217 @@
+/* ============================================
+   LIFE COMPASS - Habits Module Styles
+   ============================================ */
+
+/* Habit List */
+.habit-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+/* Time of Day Groups */
+.time-group {
+    margin-bottom: var(--space-lg);
+}
+
+.time-group-header {
+    font-size: var(--font-size-footnote);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: var(--space-sm);
+    padding-left: var(--space-xs);
+}
+
+/* Habit Item */
+.habit-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: var(--bg-surface);
+    border-radius: var(--card-border-radius);
+    transition: all var(--transition-fast);
+}
+
+.habit-item:active {
+    background: var(--bg-elevated);
+}
+
+.habit-item.checked {
+    opacity: 0.7;
+}
+
+/* Habit Checkbox */
+.habit-checkbox {
+    width: 28px;
+    height: 28px;
+    border: 2px solid var(--accent-habits);
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+    cursor: pointer;
+}
+
+.habit-checkbox.checked {
+    background: var(--accent-habits);
+}
+
+.habit-checkbox.checked::after {
+    content: '✓';
+    color: var(--bg-primary);
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Habit Icon */
+.habit-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+/* Habit Content */
+.habit-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.habit-title {
+    font-size: var(--font-size-body);
+    font-weight: var(--font-weight-medium);
+}
+
+.habit-subtitle {
+    font-size: var(--font-size-subhead);
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+/* Streak Display */
+.habit-streak {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    color: var(--accent-habits);
+    font-size: var(--font-size-subhead);
+    font-weight: var(--font-weight-medium);
+}
+
+.habit-streak-fire {
+    font-size: 16px;
+}
+
+.habit-streak-fire.animate {
+    animation: fireFlicker 1.5s ease infinite;
+}
+
+/* Weekly Heat Map */
+.habit-heatmap {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--space-xs);
+    margin-top: var(--space-md);
+}
+
+.heatmap-day {
+    aspect-ratio: 1;
+    border-radius: 4px;
+    background: var(--bg-elevated);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-caption-2);
+    color: var(--text-tertiary);
+}
+
+.heatmap-day.completed {
+    background: var(--accent-habits);
+    color: var(--bg-primary);
+}
+
+.heatmap-day.today {
+    border: 2px solid var(--text-primary);
+}
+
+.heatmap-day.future {
+    background: transparent;
+    border: 1px dashed var(--bg-pressed);
+}
+
+/* Heatmap Labels */
+.heatmap-labels {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--space-xs);
+    margin-bottom: var(--space-xs);
+}
+
+.heatmap-label {
+    text-align: center;
+    font-size: var(--font-size-caption-2);
+    color: var(--text-tertiary);
+}
+
+/* Habit Statistics */
+.habit-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-sm);
+    margin-top: var(--space-md);
+}
+
+.habit-stat {
+    background: var(--bg-elevated);
+    border-radius: var(--button-border-radius);
+    padding: var(--space-md);
+    text-align: center;
+}
+
+.habit-stat-value {
+    font-size: var(--font-size-title-2);
+    font-weight: var(--font-weight-bold);
+    color: var(--accent-habits);
+}
+
+.habit-stat-label {
+    font-size: var(--font-size-caption-1);
+    color: var(--text-secondary);
+    margin-top: var(--space-xs);
+}
+
+/* Habit Progress Summary */
+.habit-progress-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-md);
+    background: var(--bg-surface);
+    border-radius: var(--card-border-radius);
+    margin-bottom: var(--space-lg);
+}
+
+.habit-progress-text {
+    font-size: var(--font-size-headline);
+    font-weight: var(--font-weight-semibold);
+}
+
+.habit-progress-text span {
+    color: var(--accent-habits);
+}
+
+/* Origin Badge */
+.habit-origin {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-size: var(--font-size-caption-1);
+    color: var(--accent-experiments);
+    background: rgba(94, 92, 230, 0.15);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-top: var(--space-xs);
+}

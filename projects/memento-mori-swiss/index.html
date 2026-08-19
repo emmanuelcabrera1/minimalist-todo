@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LIFE IN WEEKS</title>
+    <meta name="description" content="Memento Mori. Life in weeks." />
+    <!-- Google Fonts: Inter (Bold) & Roboto Mono (Regular) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@800&family=Roboto+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="app-container">
+      <header>
+        <h1>LIFE IN WEEKS</h1>
+      </header>
+
+      <main>
+        <div class="controls">
+          <label for="birthdate">DATE OF BIRTH</label>
+          <input type="date" id="birthdate" placeholder="YYYY-MM-DD" />
+        </div>
+
+        <div class="stats">
+          <div class="stat-item">
+            <span class="label">LIVED</span>
+            <span class="value" id="weeksLived">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="label">LEFT</span>
+            <span class="value" id="weeksLeft">4160</span>
+          </div>
+          <div class="stat-item">
+            <span class="label">%</span>
+            <span class="value" id="percentageLived">0.0</span>
+          </div>
+        </div>
+
+        <div class="canvas-wrapper">
+          <canvas id="lifeGrid"></canvas>
+        </div>
+      </main>
+
+      <footer>
+        <span>MEMENTO MORI</span>
+      </footer>
+    </div>
+    <script src="renderer.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
